@@ -3,8 +3,26 @@ require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 
 class ActiveSupport::TestCase
-  # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
-  fixtures :all
+  private
 
-  # Add more helper methods to be used by all tests here...
+  def assert_allows_value(model, attribute, value)
+    model[attribute] = value
+    model.validate
+    refute model.errors[attribute].any?
+  end
+
+  def refute_allows_value(model, attribute, value, message: nil)
+    model[attribute] = value
+    model.validate
+    assert model.errors[attribute].any?
+    if message
+      assert model.errors[attribute].include?(error)
+    end
+  end
+
+  def refute_allows_values(model, attribute, values, message: nil)
+    Array.wrap(values).each do |value|
+      refute_allows_value(model, attribute, value, message: message)
+    end
+  end
 end
