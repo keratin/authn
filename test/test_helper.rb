@@ -3,6 +3,18 @@ require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 
 class ActiveSupport::TestCase
+  def self.testing(name, &block)
+    raise "already testing #{@testing}" if @testing
+    @testing = name
+    yield
+  ensure
+    @testing = nil
+  end
+
+  def self.test(name, &block)
+    super([@testing, name].join(' '), &block)
+  end
+
   private
 
   def assert_json_result(data)

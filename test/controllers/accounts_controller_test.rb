@@ -57,6 +57,42 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     assert_json_result('account_id' => account.id + 1)
   end
 
+  testing '#available' do
+    test 'with unknown name' do
+      get available_accounts_path,
+        params: {
+          name: 'unknown'
+        }
+
+      assert_response :success
+      assert_json_result('available' => true)
+    end
+
+    test 'with confirmed name' do
+      account = FactoryGirl.create(:account, :confirmed)
+
+      get available_accounts_path,
+        params: {
+          name: account.name
+        }
+
+      assert_response :success
+      assert_json_result('available' => false)
+    end
+
+    test 'with unconfirmed name' do
+      account = FactoryGirl.create(:account)
+
+      get available_accounts_path,
+        params: {
+          name: account.name
+        }
+
+      assert_response :success
+      assert_json_result('available' => true)
+    end
+  end
+
   test '#confirm with unconfirmed account' do
     account = FactoryGirl.create(:account)
     patch confirm_account_path(id: account.id)

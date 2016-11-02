@@ -40,6 +40,14 @@ class AccountsController < ApplicationController
     end
   end
 
+  # params:
+  # * name
+  def available
+    render status: :ok, json: JSONEnvelope.result(
+      available: !Account.confirmed.named(params[:name]).exists?
+    )
+  end
+
   # confirms the identified account
   #
   # returns 200 after confirming account, or if account is already confirmed
