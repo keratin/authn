@@ -56,4 +56,23 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     assert_response :created
     assert_json_result('account_id' => account.id + 1)
   end
+
+  test '#confirm with unconfirmed account' do
+    account = FactoryGirl.create(:account)
+    patch confirm_account_path(id: account.id)
+    assert_response :success
+
+    account.reload.confirmed?
+  end
+
+  test '#confirm with confirmed account' do
+    account = FactoryGirl.create(:account, :confirmed)
+    patch confirm_account_path(id: account.id)
+    assert_response :success
+  end
+
+  test '#confirm with unknown account' do
+    patch confirm_account_path(id: rand(999))
+    assert_response :not_found
+  end
 end

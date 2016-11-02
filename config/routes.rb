@@ -1,3 +1,5 @@
 Rails.application.routes.draw do
-  resources :accounts, only: [:create]
+  resources :accounts, only: [:create] do
+    patch :confirm, on: :member
+  end
 end

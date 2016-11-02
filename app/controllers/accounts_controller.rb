@@ -39,4 +39,19 @@ class AccountsController < ApplicationController
       render status: :created, json: JSONEnvelope.result(account_id: account.id)
     end
   end
+
+  # confirms the identified account
+  #
+  # returns 200 after confirming account, or if account is already confirmed
+  # returns 404 if account is unknown
+  def confirm
+    account = Account.find_by_id(params[:id])
+    if account
+      account.confirm
+
+      head :ok
+    else
+      head :not_found
+    end
+  end
 end
