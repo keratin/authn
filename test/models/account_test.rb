@@ -19,19 +19,21 @@ class AccountTest < ActiveSupport::TestCase
     refute account.changes.any?
   end
 
-  test '.reclaim with confirmed name' do
-    account = FactoryGirl.create(:account, :confirmed)
-    refute Account.reclaim(account.name)
-    assert_nothing_raised do
-      account.reload
+  testing '.reclaim' do
+    test 'with confirmed name' do
+      account = FactoryGirl.create(:account, :confirmed)
+      refute Account.reclaim(account.name)
+      assert_nothing_raised do
+        account.reload
+      end
     end
-  end
 
-  test '.reclaim with unconfirmed name' do
-    account = FactoryGirl.create(:account)
-    assert Account.reclaim(account.name)
-    assert_raises ActiveRecord::RecordNotFound do
-      account.reload
+    test 'with unconfirmed name' do
+      account = FactoryGirl.create(:account)
+      assert Account.reclaim(account.name)
+      assert_raises ActiveRecord::RecordNotFound do
+        account.reload
+      end
     end
   end
 end
