@@ -5,6 +5,14 @@ require 'rails/test_help'
 class ActiveSupport::TestCase
   private
 
+  def assert_json_result(data)
+    assert_equal JSONEnvelope.result(data), JSON.parse(response.body)
+  end
+
+  def assert_json_errors(errors)
+    assert_equal JSONEnvelope.errors(errors), JSON.parse(response.body)
+  end
+
   def assert_allows_value(model, attribute, value)
     model[attribute] = value
     model.validate

@@ -12,10 +12,26 @@ class AccountTest < ActiveSupport::TestCase
   end
 
   test '#confirm' do
-    account = Account.create!(name: 'account', password: BCrypt::Password.create('secret'))
+    account = FactoryGirl.create(:account)
     refute account.confirmed?
     account.confirm
     assert account.confirmed?
     refute account.changes.any?
+  end
+
+  test '.reclaim with confirmed name' do
+    account = FactoryGirl.create(:account, :confirmed)
+    refute Account.reclaim(account.name)
+    assert_nothing_raised do
+      account.reload
+    end
+  end
+
+  test '.reclaim with unconfirmed name' do
+    account = FactoryGirl.create(:account)
+    assert Account.reclaim(account.name)
+    assert_raises ActiveRecord::RecordNotFound do
+      account.reload
+    end
   end
 end
