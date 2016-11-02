@@ -4,10 +4,18 @@ FactoryGirl.define do
       "name-#{n}"
     end
 
-    password{ BCrypt::Password.create('secret') }
+    transient do
+      clear_password 'secret'
+    end
+
+    password{ BCrypt::Password.create(clear_password) }
 
     trait :confirmed do
       confirmed_at{ Time.zone.now }
+    end
+
+    trait :unconfirmed do
+      confirmed_at nil
     end
   end
 end

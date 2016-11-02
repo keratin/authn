@@ -3,4 +3,6 @@ Rails.application.routes.draw do
     get :available, on: :collection
     patch :confirm, on: :member
   end
+
+  resources :sessions, only: [:create]
 end
