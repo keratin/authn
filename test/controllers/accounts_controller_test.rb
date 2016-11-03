@@ -11,7 +11,8 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         headers: TRUSTED_REFERRER
 
       assert_response :created
-      assert_json_result('account_id' => 1)
+      assert_json_result()
+      assert_equal 1, session[:account_id]
     end
 
     test 'with missing fields' do

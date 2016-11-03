@@ -13,7 +13,8 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
         headers: TRUSTED_REFERRER
 
       assert_response(:created)
-      assert_json_result('account_id' => account.id)
+      assert_json_result()
+      assert_equal 1, session[:account_id]
     end
 
     test 'with unknown account name' do

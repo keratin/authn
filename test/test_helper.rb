@@ -25,7 +25,7 @@ class ActiveSupport::TestCase
 
   private
 
-  def assert_json_result(data)
+  def assert_json_result(data = {})
     assert_equal JSONEnvelope.result(data), JSON.parse(response.body)
   end
 

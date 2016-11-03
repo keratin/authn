@@ -20,4 +20,12 @@ class ApplicationController < ActionController::API
     render status: :forbidden, json: JSONEnvelope.errors('referer' => 'is not a trusted host')
   end
 
+  # TODO: optional session expiry
+  private def establish_session(account_id)
+    # avoid any potential session fixation. whatever session they had before can't be trusted.
+    reset_session
+
+    session[:account_id] = account_id
+  end
+
 end

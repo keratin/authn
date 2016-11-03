@@ -1,5 +1,5 @@
 module JSONEnvelope
-  def self.result(data)
+  def self.result(data = {})
     {
       'result' => data
     }

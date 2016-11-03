@@ -18,7 +18,8 @@ class SessionsController < ApplicationController
     placeholder = Account::EMPTY_PASSWORDS[BCrypt::Engine.cost]
 
     if BCrypt::Password.new(password || placeholder).is_password?(params[:password])
-      render status: :created, json: JSONEnvelope.result(account_id: account_id)
+      establish_session(account_id)
+      render status: :created, json: JSONEnvelope.result()
     else
       render status: :unprocessable_entity, json: JSONEnvelope.errors('credentials' => 'invalid or unknown')
     end

@@ -21,7 +21,8 @@ class AccountsController < ApplicationController
     if account.errors.any?
       render status: :unprocessable_entity, json: JSONEnvelope.errors(account.errors)
     else
-      render status: :created, json: JSONEnvelope.result(account_id: account.id)
+      establish_session(account.id)
+      render status: :created, json: JSONEnvelope.result()
     end
   end
 
