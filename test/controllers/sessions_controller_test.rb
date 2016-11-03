@@ -3,7 +3,7 @@ require 'test_helper'
 class SessionsControllerTest < ActionDispatch::IntegrationTest
   testing '#create' do
     test 'with valid credentials' do
-      account = FactoryGirl.create(:account, :confirmed, clear_password: 'valid')
+      account = FactoryGirl.create(:account, clear_password: 'valid')
 
       post sessions_path,
         params: {
@@ -26,21 +26,8 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       assert_json_errors('credentials' => 'invalid or unknown')
     end
 
-    test 'with unconfirmed account name' do
-      account = FactoryGirl.create(:account, :unconfirmed, clear_password: 'valid')
-
-      post sessions_path,
-        params: {
-          named: account.name,
-          password: 'valid'
-        }
-
-      assert_response(:unprocessable_entity)
-      assert_json_errors('credentials' => 'invalid or unknown')
-    end
-
     test 'with bad password' do
-      account = FactoryGirl.create(:account, :confirmed, clear_password: 'valid')
+      account = FactoryGirl.create(:account, clear_password: 'valid')
 
       post sessions_path,
         params: {

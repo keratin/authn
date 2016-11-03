@@ -3,7 +3,7 @@ class SessionsController < ApplicationController
   # * name
   # * password
   def create
-    account_id, password = Account.confirmed.named(params[:name]).pluck('id, password').first
+    account_id, password = Account.named(params[:name]).pluck('id, password').first
 
     # SECURITY NOTE
     #

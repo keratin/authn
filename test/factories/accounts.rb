@@ -9,13 +9,5 @@ FactoryGirl.define do
     end
 
     password{ BCrypt::Password.create(clear_password) }
-
-    trait :confirmed do
-      confirmed_at{ Time.zone.now }
-    end
-
-    trait :unconfirmed do
-      confirmed_at nil
-    end
   end
 end
