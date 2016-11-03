@@ -5,6 +5,11 @@ require 'rails/test_help'
 # test speed
 BCrypt::Engine.cost = BCrypt::Engine::MIN_COST
 
+class ActionDispatch::IntegrationTest
+  TRUSTED_REFERRER = {'REFERER' => "https://#{Configs[:auth][:trusted_hosts].sample}"}
+  UNTRUSTED_REFERRER = {'REFERER' => 'https://evil.com'}
+end
+
 class ActiveSupport::TestCase
   def self.testing(name, &block)
     raise "already testing #{@testing}" if @testing

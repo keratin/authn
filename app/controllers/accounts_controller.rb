@@ -1,4 +1,6 @@
 class AccountsController < ApplicationController
+  before_action :require_trusted_referrer, only: [:create]
+
   # params:
   # * name
   # * password

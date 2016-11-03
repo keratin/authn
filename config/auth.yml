@@ -1,0 +1,7 @@
+default:
+  trusted_hosts:
+    - <%= ENV['TRUSTED_HOST'] %>
+
+test:
+  trusted_hosts:
+    - application.test

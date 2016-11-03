@@ -26,5 +26,9 @@ module AuthServer
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # All environments require SSL, because it's easy with puma-dev or tunnelss.
+    # No excuses.
+    config.force_ssl = !Rails.env.test?
   end
 end

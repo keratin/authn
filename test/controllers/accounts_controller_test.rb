@@ -7,7 +7,8 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         params: {
           name: 'username',
           password: 'secret'
-        }
+        },
+        headers: TRUSTED_REFERRER
 
       assert_response :created
       assert_json_result('account_id' => 1)
@@ -15,7 +16,8 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
     test 'with missing fields' do
       post accounts_path,
-        params: {}
+        params: {},
+        headers: TRUSTED_REFERRER
 
       assert_response :unprocessable_entity
       assert_json_errors('name' => 'can\'t be blank')
@@ -26,7 +28,8 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         params: {
           name: 'username',
           password: 'insecure'
-        }
+        },
+        headers: TRUSTED_REFERRER
 
       assert_response :unprocessable_entity
       assert_json_errors('password' => 'does not meet security requirements')
@@ -39,10 +42,23 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         params: {
           name: account.name,
           password: 'new password'
-        }
+        },
+        headers: TRUSTED_REFERRER
 
       assert_response :unprocessable_entity
       assert_json_errors('name' => 'has already been taken')
+    end
+
+    test 'with untrusted referrer' do
+      post accounts_path,
+        params: {
+          name: 'username',
+          password: 'secret'
+        },
+        headers: UNTRUSTED_REFERRER
+
+      assert_response :forbidden
+      assert_json_errors('referer' => 'is not a trusted host')
     end
   end
 
