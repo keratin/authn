@@ -21,7 +21,7 @@ class SessionsController < ApplicationController
       establish_session(account_id)
       render status: :created, json: JSONEnvelope.result(
         id_token: JSON::JWT.new(
-          iss: "https://#{request.host}", # TODO: move to a config value
+          iss: Rails.application.config.canonical_host,
           sub: account_id,
           aud: Rails.application.config.client_hosts[0],
           exp: Time.now.utc.to_i + Rails.application.config.auth_expiry,
