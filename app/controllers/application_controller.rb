@@ -16,7 +16,7 @@ class ApplicationController < ActionController::API
     rescue URI::InvalidURIError
     end
 
-    return if Configs[:auth][:trusted_hosts].include?(referrer_host)
+    return if Rails.application.config.client_hosts.include?(referrer_host)
     render status: :forbidden, json: JSONEnvelope.errors('referer' => 'is not a trusted host')
   end
 

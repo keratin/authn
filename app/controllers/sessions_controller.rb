@@ -23,7 +23,7 @@ class SessionsController < ApplicationController
         id_token: JSON::JWT.new(
           iss: "https://#{request.host}",
           sub: account_id,
-          aud: Configs[:auth][:trusted_hosts][0],
+          aud: Rails.application.config.client_hosts[0],
           exp: Time.now.utc.to_i + Rails.application.config.auth_expiry,
           iat: Time.now.utc.to_i,
           auth_time: Time.now.utc.to_i,

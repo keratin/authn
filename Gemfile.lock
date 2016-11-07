@@ -44,8 +44,6 @@ GEM
     builder (3.2.2)
     byebug (9.0.6)
     concurrent-ruby (1.0.2)
-    configs (1.4.0)
-      activesupport (> 3.0)
     erubis (2.7.0)
     factory_girl (4.7.0)
       activesupport (>= 3.0.0)
@@ -140,7 +138,6 @@ PLATFORMS
 DEPENDENCIES
   bcrypt (~> 3.1.7)
   byebug
-  configs
   factory_girl_rails
   json-jwt
   listen (~> 3.0.5)

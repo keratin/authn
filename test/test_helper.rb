@@ -6,7 +6,7 @@ require 'rails/test_help'
 BCrypt::Engine.cost = BCrypt::Engine::MIN_COST
 
 class ActionDispatch::IntegrationTest
-  TRUSTED_REFERRER = {'REFERER' => "https://#{Configs[:auth][:trusted_hosts].sample}"}
+  TRUSTED_REFERRER = {'REFERER' => "https://#{Rails.application.config.client_hosts.sample}"}
   UNTRUSTED_REFERRER = {'REFERER' => 'https://evil.com'}
 end
 
