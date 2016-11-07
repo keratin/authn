@@ -4,7 +4,6 @@ class AccountsController < ApplicationController
   # params:
   # * username
   # * password
-  # * return_to
   def create
     account = Account.new(
       username: params[:username],
@@ -22,7 +21,17 @@ class AccountsController < ApplicationController
       render status: :unprocessable_entity, json: JSONEnvelope.errors(account.errors)
     else
       establish_session(account.id)
-      render status: :created, json: JSONEnvelope.result()
+
+      render status: :created, json: JSONEnvelope.result(
+        id_token: JSON::JWT.new(
+          iss: "https://#{request.host}",
+          sub: account.id,
+          aud: Configs[:auth][:trusted_hosts][0],
+          exp: Time.now.utc.to_i + Rails.application.config.auth_expiry,
+          iat: Time.now.utc.to_i,
+          auth_time: Time.now.utc.to_i,
+        ).sign(Rails.application.config.auth_private_key, :RS256).to_s
+      )
     end
   end
 

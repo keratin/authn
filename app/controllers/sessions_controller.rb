@@ -19,7 +19,16 @@ class SessionsController < ApplicationController
 
     if BCrypt::Password.new(password || placeholder).is_password?(params[:password])
       establish_session(account_id)
-      render status: :created, json: JSONEnvelope.result()
+      render status: :created, json: JSONEnvelope.result(
+        id_token: JSON::JWT.new(
+          iss: "https://#{request.host}",
+          sub: account_id,
+          aud: Configs[:auth][:trusted_hosts][0],
+          exp: Time.now.utc.to_i + Rails.application.config.auth_expiry,
+          iat: Time.now.utc.to_i,
+          auth_time: Time.now.utc.to_i,
+        ).sign(Rails.application.config.auth_private_key, :RS256).to_s
+      )
     else
       render status: :unprocessable_entity, json: JSONEnvelope.errors('credentials' => 'invalid or unknown')
     end

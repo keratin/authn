@@ -6,6 +6,7 @@ gem 'puma', '~> 3.0'
 gem 'bcrypt', '~> 3.1.7'
 gem 'rack-cors'
 gem 'configs'
+gem 'json-jwt'
 
 group :development, :test do
   gem 'byebug', platform: :mri

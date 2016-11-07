@@ -25,6 +25,12 @@ class ActiveSupport::TestCase
 
   private
 
+  def assert_json_jwt(str)
+    assert str.presence
+    claims = JSON::JWT.decode(str, Rails.application.config.auth_public_key)
+    yield claims
+  end
+
   def assert_json_result(data = {})
     assert_equal JSONEnvelope.result(data), JSON.parse(response.body)
   end

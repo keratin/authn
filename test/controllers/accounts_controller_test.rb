@@ -11,7 +11,9 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         headers: TRUSTED_REFERRER
 
       assert_response :created
-      assert_json_result()
+      assert_json_jwt(JSON.parse(response.body)['result']['id_token']) do |claims|
+        assert_equal 1, claims['sub']
+      end
       assert_equal 1, session[:account_id]
     end
 
