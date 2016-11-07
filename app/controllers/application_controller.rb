@@ -2,6 +2,34 @@ require 'json_envelope'
 
 class ApplicationController < ActionController::API
 
+  # a subset of the openid connect spec:
+  # http://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
+  #
+  # we are not 100% spec openid connect (no redirects), so not all fields apply.
+  def configuration
+    render status: :success, json: {
+      issuer: request.host, # TODO: move to a config value
+      response_types_supported: ['id_token'],
+      subject_types_supported: ['public'],
+      id_token_signing_alg_values_supported: [Rails.application.config.auth_signing_alg],
+      claims_supported: %w(iss sub aud exp iat auth_time),
+      jwks_uri: app_keys_url,
+    }
+  end
+
+  # the public key data necessary to validate JWT from this issuer
+  # see: JWK
+  def keys
+    render status: :success, json: {
+      keys: [
+        JSON::JWK.new(Rails.application.config.auth_public_key).slice(:kty, :kid, :e, :n).merge(
+          use: 'sig',
+          alg: Rails.application.config.auth_signing_alg
+        )
+      ]
+    }
+  end
+
   # when HTTP_REFERER exists, it's a great way to prevent CSRF attacks.
   #
   # an experiment performed in http://seclab.stanford.edu/websec/csrf/csrf.pdf found the

@@ -5,3 +5,5 @@ Rails.application.config.auth_public_key = OpenSSL::PKey::RSA.new(File.read(key_
 Rails.application.config.auth_expiry = 1.hour.to_i
 
 Rails.application.config.client_hosts = [ENV['TRUSTED_HOST']]
+
+Rails.application.config.auth_signing_alg = 'RS256'

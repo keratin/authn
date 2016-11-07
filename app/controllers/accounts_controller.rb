@@ -24,13 +24,13 @@ class AccountsController < ApplicationController
 
       render status: :created, json: JSONEnvelope.result(
         id_token: JSON::JWT.new(
-          iss: "https://#{request.host}",
+          iss: "https://#{request.host}", # TODO: move to a config value
           sub: account.id,
           aud: Rails.application.config.client_hosts[0],
           exp: Time.now.utc.to_i + Rails.application.config.auth_expiry,
           iat: Time.now.utc.to_i,
           auth_time: Time.now.utc.to_i,
-        ).sign(Rails.application.config.auth_private_key, :RS256).to_s
+        ).sign(Rails.application.config.auth_private_key, Rails.application.config.auth_signing_alg).to_s
       )
     end
   end
