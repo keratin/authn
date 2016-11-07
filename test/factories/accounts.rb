@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :account do
-    sequence :name do |n|
+    sequence :username do |n|
       "name-#{n}"
     end
 

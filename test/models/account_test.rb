@@ -1,9 +1,9 @@
 require 'test_helper'
 
 class AccountTest < ActiveSupport::TestCase
-  test '#name validations' do
-    assert_allows_value(Account.new, :name, 'a')
-    refute_allows_values(Account.new, :name, [nil, ''])
+  test '#username validations' do
+    assert_allows_value(Account.new, :username, 'a')
+    refute_allows_values(Account.new, :username, [nil, ''])
   end
 
   test '#password validations' do

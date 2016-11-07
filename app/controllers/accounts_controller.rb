@@ -2,12 +2,12 @@ class AccountsController < ApplicationController
   before_action :require_trusted_referrer, only: [:create]
 
   # params:
-  # * name
+  # * username
   # * password
   # * return_to
   def create
     account = Account.new(
-      name: params[:name],
+      username: params[:username],
       password: BCrypt::Password.create(params[:password]).to_s
     )
 
@@ -15,7 +15,7 @@ class AccountsController < ApplicationController
       account.save
     rescue ActiveRecord::RecordNotUnique
       # forgiveness is faster than permission
-      account.errors.add(:name, 'has already been taken')
+      account.errors.add(:username, 'has already been taken')
     end
 
     if account.errors.any?
@@ -27,10 +27,10 @@ class AccountsController < ApplicationController
   end
 
   # params:
-  # * name
+  # * username
   def available
     render status: :ok, json: JSONEnvelope.result(
-      available: !Account.named(params[:name]).exists?
+      available: !Account.named(params[:username]).exists?
     )
   end
 end

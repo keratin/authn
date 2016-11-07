@@ -13,10 +13,10 @@ class Account < ApplicationRecord
     12 => "$2a$12$w58M3IGXURRAqXQ/OAsMmuqcV4YqP3WyJ.yHvHI5ANUK1bRWxeceK"
   }
 
-  validates :name, presence: true
+  validates :username, presence: true
   validates :password, presence: true
 
-  scope :named, ->(name) { where(name: name) }
+  scope :named, ->(username) { where(username: username) }
 
   def authenticate(given_password)
     BCrypt::Password.new(self.password).is_password? given_password

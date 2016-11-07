@@ -2,10 +2,10 @@ class SessionsController < ApplicationController
   before_action :require_trusted_referrer, only: [:create]
 
   # params:
-  # * name
+  # * username
   # * password
   def create
-    account_id, password = Account.named(params[:name]).pluck('id, password').first
+    account_id, password = Account.named(params[:username]).pluck('id, password').first
 
     # SECURITY NOTE
     #

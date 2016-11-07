@@ -7,7 +7,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
       post sessions_path,
         params: {
-          name: account.name,
+          username: account.username,
           password: 'valid'
         },
         headers: TRUSTED_REFERRER
@@ -17,10 +17,10 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       assert_equal 1, session[:account_id]
     end
 
-    test 'with unknown account name' do
+    test 'with unknown account username' do
       post sessions_path,
         params: {
-          name: 'unknown',
+          username: 'unknown',
           password: 'valid'
         },
         headers: TRUSTED_REFERRER
@@ -34,7 +34,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
       post sessions_path,
         params: {
-          name: account.name,
+          username: account.username,
           password: 'unknown'
         },
         headers: TRUSTED_REFERRER
@@ -48,7 +48,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
       post sessions_path,
         params: {
-          name: account.name,
+          username: account.username,
           password: 'valid'
         },
         headers: UNTRUSTED_REFERRER
