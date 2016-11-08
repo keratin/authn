@@ -22,7 +22,7 @@ class ApplicationController < ActionController::API
   def keys
     render status: :success, json: {
       keys: [
-        JSON::JWK.new(Rails.application.config.auth_public_key).slice(:kty, :kid, :e, :n).merge(
+        Rails.application.config.auth_public_key.to_jwk.slice(:kty, :kid, :e, :n).merge(
           use: 'sig',
           alg: Rails.application.config.auth_signing_alg
         )
