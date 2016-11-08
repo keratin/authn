@@ -8,4 +8,6 @@ Rails.application.config.auth_expiry = 1.hour.to_i
 
 Rails.application.config.client_hosts = [ENV['TRUSTED_HOST']]
 
-Rails.application.config.canonical_host = ENV['HOST']
+# must be a full base URL, e.g. https://auth.service
+# will be used as issuer for id tokens, among other things.
+Rails.application.config.base_url = ENV['BASE_URL']

@@ -8,7 +8,7 @@ class ApplicationController < ActionController::API
   # we are not 100% spec openid connect (no redirects), so not all fields apply.
   def configuration
     render status: :success, json: {
-      issuer: Rails.application.config.canonical_host,
+      issuer: Rails.application.config.base_url,
       response_types_supported: ['id_token'],
       subject_types_supported: ['public'],
       id_token_signing_alg_values_supported: [Rails.application.config.auth_signing_alg],
