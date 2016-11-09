@@ -7,7 +7,7 @@ class ApplicationController < ActionController::API
   #
   # we are not 100% spec openid connect (no redirects), so not all fields apply.
   def configuration
-    render status: :success, json: {
+    render status: :ok, json: {
       issuer: Rails.application.config.base_url,
       response_types_supported: ['id_token'],
       subject_types_supported: ['public'],
@@ -20,7 +20,7 @@ class ApplicationController < ActionController::API
   # the public key data necessary to validate JWT from this issuer
   # see: JWK
   def keys
-    render status: :success, json: {
+    render status: :ok, json: {
       keys: [
         Rails.application.config.auth_public_key.to_jwk.slice(:kty, :kid, :e, :n).merge(
           use: 'sig',
