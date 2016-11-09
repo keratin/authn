@@ -14,7 +14,7 @@ class AccountsController < ApplicationController
       account.save
     rescue ActiveRecord::RecordNotUnique
       # forgiveness is faster than permission
-      account.errors.add(:username, 'has already been taken')
+      account.errors.add(:username, ErrorCodes::USERNAME_TAKEN)
     end
 
     if account.errors.any?

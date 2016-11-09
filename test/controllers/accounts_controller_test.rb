@@ -23,7 +23,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         headers: TRUSTED_REFERRER
 
       assert_response :unprocessable_entity
-      assert_json_errors('username' => 'can\'t be blank')
+      assert_json_errors('username' => ErrorCodes::USERNAME_MISSING)
     end
 
     test 'with insecure password' do
@@ -35,7 +35,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         headers: TRUSTED_REFERRER
 
       assert_response :unprocessable_entity
-      assert_json_errors('password' => 'does not meet security requirements')
+      assert_json_errors('password' => PASSWORD_INSECURE)
     end
 
     test 'with username of existing account' do
@@ -49,7 +49,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         headers: TRUSTED_REFERRER
 
       assert_response :unprocessable_entity
-      assert_json_errors('username' => 'has already been taken')
+      assert_json_errors('username' => ErrorCodes::USERNAME_TAKEN)
     end
 
     test 'with untrusted referrer' do

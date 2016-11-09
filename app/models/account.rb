@@ -13,8 +13,8 @@ class Account < ApplicationRecord
     12 => "$2a$12$w58M3IGXURRAqXQ/OAsMmuqcV4YqP3WyJ.yHvHI5ANUK1bRWxeceK"
   }
 
-  validates :username, presence: true
-  validates :password, presence: true
+  validates :username, presence: { message: ErrorCodes::USERNAME_MISSING }
+  validates :password, presence: { message: ErrorCodes::PASSWORD_MISSING }
 
   scope :named, ->(username) { where(username: username) }
 

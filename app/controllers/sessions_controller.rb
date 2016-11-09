@@ -30,7 +30,7 @@ class SessionsController < ApplicationController
         ).sign(Rails.application.config.auth_private_key, :RS256).to_s
       )
     else
-      render status: :unprocessable_entity, json: JSONEnvelope.errors('credentials' => 'invalid or unknown')
+      render status: :unprocessable_entity, json: JSONEnvelope.errors('credentials' => ErrorCodes::CREDENTIALS_FAILED)
     end
   end
 
