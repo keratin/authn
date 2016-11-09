@@ -6,9 +6,9 @@ class AccountsController < ApplicationController
   # * password
   def create
     account = Account.new(
-      username: params[:username],
-      password: BCrypt::Password.create(params[:password]).to_s
+      username: params[:username]
     )
+    account.password = BCrypt::Password.create(params[:password]).to_s if params[:password].present?
 
     begin
       account.save

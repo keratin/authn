@@ -23,7 +23,10 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         headers: TRUSTED_REFERRER
 
       assert_response :unprocessable_entity
-      assert_json_errors('username' => ErrorCodes::USERNAME_MISSING)
+      assert_json_errors(
+        'username' => ErrorCodes::USERNAME_MISSING,
+        'password' => ErrorCodes::PASSWORD_MISSING
+      )
     end
 
     test 'with insecure password' do
