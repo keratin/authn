@@ -5,33 +5,9 @@ class AccountsController < ApplicationController
   # * username
   # * password
   def create
-    account = Account.new(
-      username: params[:username]
-    )
-    account.password = BCrypt::Password.create(params[:password]).to_s if params[:password].present?
+    creator = AccountCreator.new(params[:username], params[:password])
 
-    if params[:password].present?
-      # SECURITY NOTE:
-      #
-      # this password complexity algorithm is expensive and scales exponentially to the length
-      # of the provided string. we mitigate simple DoS attacks by only considering the first 72
-      # characters of the password, which is also bcrypt's limit.
-      password_strength = Zxcvbn.test(params[:password][0, 72])
-      if password_strength.score < Rails.application.config.minimum_password_score
-        account.errors.add(:password, ErrorCodes::PASSWORD_INSECURE)
-      end
-    end
-
-    begin
-      account.save unless account.errors.any?
-    rescue ActiveRecord::RecordNotUnique
-      # forgiveness is faster than permission
-      account.errors.add(:username, ErrorCodes::USERNAME_TAKEN)
-    end
-
-    if account.errors.any?
-      render status: :unprocessable_entity, json: JSONEnvelope.errors(account.errors)
-    else
+    if account = creator.perform
       establish_session(account.id)
 
       render status: :created, json: JSONEnvelope.result(
@@ -44,6 +20,8 @@ class AccountsController < ApplicationController
           auth_time: Time.now.utc.to_i,
         ).sign(Rails.application.config.auth_private_key, Rails.application.config.auth_signing_alg).to_s
       )
+    else
+      render status: :unprocessable_entity, json: JSONEnvelope.errors(creator.errors)
     end
   end
 
