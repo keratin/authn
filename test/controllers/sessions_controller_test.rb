@@ -80,4 +80,36 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       assert_response(:unauthorized)
     end
   end
+
+  testing '#destroy' do
+    test 'with safe redirect' do
+      get logout_sessions_path,
+        params: {
+          redirect_uri: 'https://demo.dev/callback?hello=world'
+        },
+        headers: TRUSTED_REFERRER
+
+      assert_response(:redirect)
+      assert_redirected_to("https://demo.dev/callback?hello=world")
+    end
+
+    test 'with unknown redirect' do
+      get logout_sessions_path,
+        params: {
+          redirect_uri: 'https://evil.tech/callback'
+        },
+        headers: TRUSTED_REFERRER
+
+      assert_response(:redirect)
+      assert_redirected_to("https://demo.dev")
+    end
+
+    test 'with no redirect' do
+      get logout_sessions_path,
+        headers: TRUSTED_REFERRER
+
+      assert_response(:redirect)
+      assert_redirected_to("https://demo.dev")
+    end
+  end
 end

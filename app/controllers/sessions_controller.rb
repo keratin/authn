@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  before_action :require_trusted_referrer, only: [:create, :refresh]
+  before_action :require_trusted_referrer, only: [:create, :refresh, :destroy]
 
   # params:
   # * username
@@ -34,6 +34,18 @@ class SessionsController < ApplicationController
       )
     else
       render status: :unauthorized
+    end
+  end
+
+  # params:
+  # * redirect_uri (optional)
+  def destroy
+    reset_session
+
+    if trusted_host?(params[:redirect_uri])
+      redirect_to params[:redirect_uri]
+    else
+      redirect_to request.referer
     end
   end
 

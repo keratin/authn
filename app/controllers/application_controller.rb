@@ -39,13 +39,17 @@ class ApplicationController < ActionController::API
   # if this is ever determined insufficient, the backup plan is a custom header set by
   # compatible javascript. stay stateless!
   private def require_trusted_referrer
-    referrer_host = begin
-      URI.parse(request.referer).host
+    return if trusted_host?(request.referer)
+    render status: :forbidden, json: JSONEnvelope.errors('referer' => 'is not a trusted host')
+  end
+
+  private def trusted_host?(uri)
+    host = begin
+      URI.parse(uri).host
     rescue URI::InvalidURIError
     end
 
-    return if Rails.application.config.client_hosts.include?(referrer_host)
-    render status: :forbidden, json: JSONEnvelope.errors('referer' => 'is not a trusted host')
+    Rails.application.config.client_hosts.include?(host)
   end
 
   private def establish_session(account_id)

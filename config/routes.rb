@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   resource  :sessions, only: [:create] do
     get :refresh
+    get :logout, action: 'destroy'
   end
 
   # NOTE: this does not use .well-known/openid-configuration because this service does
