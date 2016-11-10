@@ -11,14 +11,7 @@ class AccountsController < ApplicationController
       establish_session(account.id)
 
       render status: :created, json: JSONEnvelope.result(
-        id_token: JSON::JWT.new(
-          iss: Rails.application.config.base_url,
-          sub: account.id,
-          aud: Rails.application.config.client_hosts[0],
-          exp: Time.now.utc.to_i + Rails.application.config.auth_expiry,
-          iat: Time.now.utc.to_i,
-          auth_time: Time.now.utc.to_i,
-        ).sign(Rails.application.config.auth_private_key, Rails.application.config.auth_signing_alg).to_s
+        id_token: issue_token_from(session)
       )
     else
       render status: :unprocessable_entity, json: JSONEnvelope.errors(creator.errors)

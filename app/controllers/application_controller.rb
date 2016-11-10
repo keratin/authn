@@ -48,12 +48,23 @@ class ApplicationController < ActionController::API
     render status: :forbidden, json: JSONEnvelope.errors('referer' => 'is not a trusted host')
   end
 
-  # TODO: optional session expiry
   private def establish_session(account_id)
     # avoid any potential session fixation. whatever session they had before can't be trusted.
     reset_session
 
     session[:account_id] = account_id
+    session[:created_at] = Time.now.to_i
+  end
+
+  private def issue_token_from(session)
+    JSON::JWT.new(
+      iss: Rails.application.config.base_url,
+      sub: session[:account_id],
+      aud: Rails.application.config.client_hosts[0],
+      exp: Time.now.utc.to_i + Rails.application.config.auth_expiry,
+      iat: Time.now.utc.to_i,
+      auth_time: session[:created_at].to_i
+    ).sign(Rails.application.config.auth_private_key, Rails.application.config.auth_signing_alg).to_s
   end
 
 end

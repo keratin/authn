@@ -11,5 +11,6 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     resource '/accounts', methods: [:post], headers: :any
     resource '/accounts/available', methods: [:post], headers: :any
     resource '/sessions', methods: [:post], headers: :any
+    resource '/sessions/refresh', methods: [:get], headers: :any
   end
 end

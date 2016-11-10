@@ -3,7 +3,9 @@ Rails.application.routes.draw do
     get :available, on: :collection
   end
 
-  resources :sessions, only: [:create]
+  resource  :sessions, only: [:create] do
+    get :refresh
+  end
 
   # NOTE: this does not use .well-known/openid-configuration because this service does
   #       not fully conform to the openid-connect spec.

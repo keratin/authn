@@ -73,6 +73,7 @@ GEM
     mime-types-data (3.2016.0521)
     mini_portile2 (2.1.0)
     minitest (5.9.1)
+    minitest-stub_any_instance (1.0.1)
     multi_json (1.12.1)
     nio4r (1.2.1)
     nokogiri (1.6.8.1)
@@ -142,6 +143,7 @@ DEPENDENCIES
   factory_girl_rails
   json-jwt
   listen (~> 3.0.5)
+  minitest-stub_any_instance
   puma (~> 3.0)
   rack-cors
   rails (~> 5.0.0, >= 5.0.0.1)

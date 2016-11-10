@@ -4,6 +4,12 @@ Rails.application.config.auth_private_key = OpenSSL::PKey::RSA.new(File.read(key
 Rails.application.config.auth_public_key = OpenSSL::PKey::RSA.new(File.read(key_path + '.pub'))
 Rails.application.config.auth_signing_alg = 'RS256'
 
+# We do not hand out perpetual application tokens. We make them expire, and require the browser to
+# occasionally get new ones based on an active session with the authentication service. This sets
+# us up to eventually revoke sessions or devices remotely (and on logout) with confidence that any
+# leaked token will have very limited usage.
+#
+# Also see: refresh tokens (client->authn session) & access tokens (client->app session).
 Rails.application.config.auth_expiry = 1.hour.to_i
 
 Rails.application.config.client_hosts = [ENV['TRUSTED_HOST']]

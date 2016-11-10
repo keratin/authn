@@ -10,7 +10,11 @@ gem 'zxcvbn-ruby', require: 'zxcvbn'
 
 group :development, :test do
   gem 'byebug', platform: :mri
+end
+
+group :test do
   gem 'factory_girl_rails'
+  gem 'minitest-stub_any_instance'
 end
 
 group :development do

@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  before_action :require_trusted_referrer, only: [:create]
+  before_action :require_trusted_referrer, only: [:create, :refresh]
 
   # params:
   # * username
@@ -20,17 +20,20 @@ class SessionsController < ApplicationController
     if BCrypt::Password.new(password || placeholder).is_password?(params[:password])
       establish_session(account_id)
       render status: :created, json: JSONEnvelope.result(
-        id_token: JSON::JWT.new(
-          iss: Rails.application.config.base_url,
-          sub: account_id,
-          aud: Rails.application.config.client_hosts[0],
-          exp: Time.now.utc.to_i + Rails.application.config.auth_expiry,
-          iat: Time.now.utc.to_i,
-          auth_time: Time.now.utc.to_i,
-        ).sign(Rails.application.config.auth_private_key, :RS256).to_s
+        id_token: issue_token_from(session)
       )
     else
       render status: :unprocessable_entity, json: JSONEnvelope.errors('credentials' => ErrorCodes::CREDENTIALS_FAILED)
+    end
+  end
+
+  def refresh
+    if session[:account_id]
+      render status: :created, json: JSONEnvelope.result(
+        id_token: issue_token_from(session)
+      )
+    else
+      render status: :unauthorized
     end
   end
 

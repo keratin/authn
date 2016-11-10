@@ -59,4 +59,25 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       assert_json_errors('referer' => 'is not a trusted host')
     end
   end
+
+  testing '#refresh' do
+    test 'with existing valid session' do
+      ApplicationController.stub_any_instance(:session, {account_id: 42}) do
+        get refresh_sessions_path,
+          headers: TRUSTED_REFERRER
+      end
+
+      assert_response(:success)
+      assert_json_jwt(JSON.parse(response.body)['result']['id_token']) do |claims|
+        assert_equal 42, claims['sub']
+      end
+    end
+
+    test 'without existing valid session' do
+      get refresh_sessions_path,
+        headers: TRUSTED_REFERRER
+
+      assert_response(:unauthorized)
+    end
+  end
 end
