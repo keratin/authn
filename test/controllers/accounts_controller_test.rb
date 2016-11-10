@@ -6,7 +6,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
       post accounts_path,
         params: {
           username: 'username',
-          password: 'secret'
+          password: SecureRandom.hex(8)
         },
         headers: TRUSTED_REFERRER
 
@@ -38,7 +38,20 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         headers: TRUSTED_REFERRER
 
       assert_response :unprocessable_entity
-      assert_json_errors('password' => PASSWORD_INSECURE)
+      assert_json_errors('password' => ErrorCodes::PASSWORD_INSECURE)
+    end
+
+    test 'with maliciously long password' do
+      ms = Benchmark.ms do
+        post accounts_path,
+          params: {
+            username: 'username',
+            password: SecureRandom.hex(150)
+          },
+          headers: TRUSTED_REFERRER
+      end
+
+      assert ms < 500, ms
     end
 
     test 'with username of existing account' do
@@ -47,7 +60,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
       post accounts_path,
         params: {
           username: account.username,
-          password: 'new password'
+          password: SecureRandom.hex(8)
         },
         headers: TRUSTED_REFERRER
 
@@ -59,7 +72,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
       post accounts_path,
         params: {
           username: 'username',
-          password: 'secret'
+          password: SecureRandom.hex(8)
         },
         headers: UNTRUSTED_REFERRER
 

@@ -11,3 +11,5 @@ Rails.application.config.client_hosts = [ENV['TRUSTED_HOST']]
 # must be a full base URL, e.g. https://auth.service
 # will be used as issuer for id tokens, among other things.
 Rails.application.config.base_url = ENV['BASE_URL']
+
+Rails.application.config.minimum_password_score = 2
