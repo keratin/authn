@@ -22,11 +22,13 @@ module RefreshToken
     bin = [hex].pack('H*')
 
     REDIS.with do |conn|
-      # persist the token
-      conn.set("s:t.#{bin}", account_id)
+      conn.pipelined do
+        # persist the token
+        conn.set("s:t.#{bin}", account_id)
 
-      # maintain a list of tokens per account id
-      conn.sadd("s:a.#{account_id}", bin)
+        # maintain a list of tokens per account id
+        conn.sadd("s:a.#{account_id}", bin)
+      end
     end
 
     hex
@@ -36,8 +38,10 @@ module RefreshToken
     bin = [hex].pack('H*')
     REDIS.with do |conn|
       account_id = conn.get("s:t.#{bin}")
-      conn.del("s:t.#{bin}")
-      conn.srem("s:a.#{account_id}", bin)
+      conn.pipelined do
+        conn.del("s:t.#{bin}")
+        conn.srem("s:a.#{account_id}", bin)
+      end
     end
   end
 
