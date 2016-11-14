@@ -1,3 +1,14 @@
+# Redis memory estimates:
+#
+# * 368 bytes to store a token on a new account
+# * 176 bytes to store a second token on an existing account
+#
+# So an application with 1 million logged-in users and an average of 1.2 sessions/account would use
+# around 375mb memory.
+#
+# NOTE: the cryptic keys are to save memory
+#
+# TODO: refresh token expiration. do not bloat memory over the course of years.
 module RefreshToken
   # returns: account_id or nil
   def self.find(hex)
