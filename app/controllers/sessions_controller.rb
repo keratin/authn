@@ -29,6 +29,7 @@ class SessionsController < ApplicationController
 
   def refresh
     if session[:account_id] && RefreshToken.find(session[:token])
+      RefreshToken.touch(token: session[:token], account_id: session[:account_id])
       render status: :created, json: JSONEnvelope.result(
         id_token: issue_token_from(session)
       )

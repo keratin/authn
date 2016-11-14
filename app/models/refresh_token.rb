@@ -1,14 +1,12 @@
 # Redis memory estimates:
 #
-# * 368 bytes to store a token on a new account
-# * 176 bytes to store a second token on an existing account
+# * ~470 bytes to store a token on a new account
+# * ~246 bytes to store a second token on an existing account
 #
 # So an application with 1 million logged-in users and an average of 1.2 sessions/account would use
-# around 375mb memory.
+# around 500mb memory.
 #
 # NOTE: the cryptic keys are to save memory
-#
-# TODO: refresh token expiration. do not bloat memory over the course of years.
 module RefreshToken
   # returns: account_id or nil
   def self.find(hex)
@@ -16,6 +14,17 @@ module RefreshToken
 
     REDIS.with do |conn|
       conn.get("s:t.#{bin}")
+    end
+  end
+
+  def self.touch(token:, account_id:)
+    return unless account_id.present?
+    bin = [token].pack('H*')
+    REDIS.with do |conn|
+      conn.pipelined do
+        conn.expire("s:t.#{bin}", Rails.application.config.refresh_token_expiry)
+        conn.expire("s:a.#{account_id}", Rails.application.config.refresh_token_expiry)
+      end
     end
   end
 
@@ -35,13 +44,13 @@ module RefreshToken
     REDIS.with do |conn|
       conn.pipelined do
         # persist the token
-        conn.set("s:t.#{bin}", account_id)
+        conn.set("s:t.#{bin}", account_id, ex: Rails.application.config.refresh_token_expiry)
 
         # maintain a list of tokens per account id
         conn.sadd("s:a.#{account_id}", bin)
+        conn.expire("s:a.#{account_id}", Rails.application.config.refresh_token_expiry)
       end
     end
-
     hex
   end
 

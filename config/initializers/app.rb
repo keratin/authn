@@ -31,7 +31,12 @@ Rails.application.config.auth_signing_alg = 'RS256'
 # Note that this expiry also creates an effective timeout period where anyone who closes the app and
 # stops refreshing the session will find themselves logged out (holding an outdate session token)
 # when they return.
-Rails.application.config.auth_expiry = 1.hour.to_i
+Rails.application.config.access_token_expiry = 1.hour.to_i
+
+# This setting controls how long we keep refresh tokens after their last touch. This is necessary to
+# prevent years-long Redis bloat from inactive sessions, where users close the window rather than
+# log out.
+Rails.application.config.refresh_token_expiry = 1.year.to_i
 
 Rails.application.config.client_hosts = [ENV['TRUSTED_HOST']]
 

@@ -54,6 +54,7 @@ class ApplicationController < ActionController::API
 
   private def establish_session(account_id)
     # avoid any potential session fixation. whatever session they had before can't be trusted.
+    RefreshToken.revoke(session[:token]) if session[:token]
     reset_session
 
     session[:account_id] = account_id
@@ -66,7 +67,7 @@ class ApplicationController < ActionController::API
       iss: Rails.application.config.base_url,
       sub: session[:account_id],
       aud: Rails.application.config.client_hosts[0],
-      exp: Time.now.utc.to_i + Rails.application.config.auth_expiry,
+      exp: Time.now.utc.to_i + Rails.application.config.access_token_expiry,
       iat: Time.now.utc.to_i,
       auth_time: session[:created_at].to_i
     ).sign(Rails.application.config.auth_private_key, Rails.application.config.auth_signing_alg).to_s
