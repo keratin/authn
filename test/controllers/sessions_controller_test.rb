@@ -62,7 +62,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   testing '#refresh' do
     test 'with existing valid session' do
-      ApplicationController.stub_any_instance(:session, {account_id: 42}) do
+      ApplicationController.stub_any_instance(:session, {account_id: 42, token: RefreshToken.create(42)}) do
         get refresh_sessions_path,
           headers: TRUSTED_REFERRER
       end

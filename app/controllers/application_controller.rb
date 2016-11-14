@@ -57,6 +57,7 @@ class ApplicationController < ActionController::API
     reset_session
 
     session[:account_id] = account_id
+    session[:token] = RefreshToken.create(account_id)
     session[:created_at] = Time.now.to_i
   end
 
