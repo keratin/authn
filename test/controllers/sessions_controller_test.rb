@@ -62,7 +62,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   testing '#refresh' do
     test 'with existing valid session' do
-      ApplicationController.stub_any_instance(:session, {account_id: 42, token: RefreshToken.create(42)}) do
+      with_session(account_id: 42) do
         get refresh_sessions_path,
           headers: TRUSTED_REFERRER
       end
@@ -82,15 +82,21 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   testing '#destroy' do
-    test 'with safe redirect' do
-      get logout_sessions_path,
-        params: {
-          redirect_uri: 'https://demo.dev/callback?hello=world'
-        },
-        headers: TRUSTED_REFERRER
+    test 'with valid session and safe redirect' do
+      account_id = rand(9999)
+      token = RefreshToken.create(account_id)
+
+      with_session(account_id: account_id, token: token) do
+        get logout_sessions_path,
+          params: {
+            redirect_uri: 'https://demo.dev/callback?hello=world'
+          },
+          headers: TRUSTED_REFERRER
+      end
 
       assert_response(:redirect)
       assert_redirected_to("https://demo.dev/callback?hello=world")
+      refute RefreshToken.find(token)
     end
 
     test 'with unknown redirect' do

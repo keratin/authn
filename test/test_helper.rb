@@ -30,6 +30,16 @@ class ActiveSupport::TestCase
     REDIS.with{|conn| conn.flushall }
   end
 
+  def with_session(account_id: nil, token: nil)
+    account_id ||= rand(9999)
+    ApplicationController.stub_any_instance(:session, {
+      account_id: account_id,
+      token: token || RefreshToken.create(account_id)}
+    ) do
+      yield
+    end
+  end
+
   private
 
   def assert_json_jwt(str)

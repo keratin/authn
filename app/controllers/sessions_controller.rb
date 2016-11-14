@@ -40,6 +40,7 @@ class SessionsController < ApplicationController
   # params:
   # * redirect_uri (optional)
   def destroy
+    RefreshToken.revoke(session[:token])
     reset_session
 
     if trusted_host?(params[:redirect_uri])
