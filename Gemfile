@@ -7,6 +7,9 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'rack-cors'
 gem 'json-jwt'
 gem 'zxcvbn-ruby', require: 'zxcvbn'
+gem 'hiredis'
+gem 'redis', require: ["redis", "redis/connection/hiredis"]
+gem 'connection_pool'
 
 group :development, :test do
   gem 'byebug', platform: :mri

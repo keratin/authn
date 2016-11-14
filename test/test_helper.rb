@@ -1,4 +1,6 @@
 ENV['RAILS_ENV'] ||= 'test'
+ENV['REDIS_URL'] = "redis://localhost:6379/1"
+
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 
@@ -21,6 +23,11 @@ class ActiveSupport::TestCase
 
   def self.test(name, &block)
     super([@testing, name].join(' '), &block)
+  end
+
+  def teardown
+    super
+    REDIS.with{|conn| conn.flushall }
   end
 
   private
