@@ -10,6 +10,7 @@ gem 'zxcvbn-ruby', require: 'zxcvbn'
 gem 'hiredis'
 gem 'redis', require: ["redis", "redis/connection/hiredis"]
 gem 'connection_pool'
+gem 'sucker_punch'
 
 group :development, :test do
   gem 'byebug', platform: :mri
