@@ -40,8 +40,19 @@ Rails.application.config.refresh_token_expiry = 1.year.to_i
 
 Rails.application.config.client_hosts = [ENV['TRUSTED_HOST']]
 
-# must be a full base URL, e.g. https://auth.service
-# will be used as issuer for id tokens, among other things.
+# will be used as issuer for id tokens, and must be a URL that the application can resolve in order
+# to fetch our public key for JWT verification.
+#
+# e.g. https://auth.service
 Rails.application.config.base_url = ENV['BASE_URL']
 
+# minimum complexity score from the zxcvbn algorithm, where:
+#
+# * 0 - too guessable
+# * 1 - very guessable
+# * 2 - somewhat guessable
+# * 3 - safely unguessable
+# * 4 - very unguessable
+#
+# see: https://blogs.dropbox.com/tech/2012/04/zxcvbn-realistic-password-strength-estimation/
 Rails.application.config.minimum_password_score = 2
