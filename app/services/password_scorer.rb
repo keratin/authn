@@ -1,4 +1,9 @@
 PasswordScorer = Struct.new(:password) do
+  # using a singleton for the tester means that we preload dictionary data on boot
+  # and save that performance cost when testing individual passwords. it makes a
+  # significant difference even during tests.
+  TESTER = Zxcvbn::Tester.new
+
   # SECURITY NOTE:
   #
   # this password complexity algorithm is expensive and scales exponentially to the length of the
@@ -6,7 +11,7 @@ PasswordScorer = Struct.new(:password) do
   # the password, which is also bcrypt's limit.
   def perform
     if password.present?
-      Zxcvbn.test(password[0, 72]).score
+      TESTER.test(password[0, 72]).score
     else
       0
     end
