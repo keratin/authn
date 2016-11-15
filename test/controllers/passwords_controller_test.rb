@@ -3,6 +3,9 @@ require 'test_helper'
 class PasswordsControllerTest < ActionDispatch::IntegrationTest
   testing '#edit' do
     test 'with known username' do
+      password_reset_url = Rails.application.config.application_endpoints[:password_reset_uri].to_s
+      stub_request(:post, password_reset_url)
+
       account = FactoryGirl.create(:account)
 
       get edit_password_path,
@@ -11,7 +14,10 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
         }
 
       assert_response(:success)
-      # TODO: assert background job. webmock?
+      assert_requested(:post, password_reset_url) do |req|
+        assert req.body.include?("account_id=#{account.id}")
+        assert req.body.include?("token=")
+      end
     end
 
     test 'with unknown username' do
@@ -21,7 +27,6 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
         }
 
       assert_response(:success)
-      # TODO: expect no background job. webmock?
     end
   end
 end

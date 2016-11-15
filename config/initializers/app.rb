@@ -56,3 +56,14 @@ Rails.application.config.base_url = ENV['BASE_URL']
 #
 # see: https://blogs.dropbox.com/tech/2012/04/zxcvbn-realistic-password-strength-estimation/
 Rails.application.config.minimum_password_score = 2
+
+# full urls for endpoints we need to communicate with the main application.
+#
+# for security, each url in production should use https and include a http basic auth username &
+# password.
+Rails.application.config.application_endpoints = {
+  password_reset_uri: URI.parse(ENV['PASSWORD_RESET_URL'])
+}
+
+# how long is a password reset token valid?
+Rails.application.config.password_reset_expiry = 30.minutes
