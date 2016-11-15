@@ -12,6 +12,12 @@ BCrypt::Engine.cost = BCrypt::Engine::MIN_COST
 class ActionDispatch::IntegrationTest
   TRUSTED_REFERRER = {'REFERER' => "https://#{Rails.application.config.client_hosts.sample}"}
   UNTRUSTED_REFERRER = {'REFERER' => 'https://evil.com'}
+  API_CREDENTIALS = {
+    'HTTP_AUTHORIZATION' => ActionController::HttpAuthentication::Basic.encode_credentials(
+      Rails.application.config.api_username,
+      Rails.application.config.api_password
+    )
+  }
 end
 
 class ActiveSupport::TestCase

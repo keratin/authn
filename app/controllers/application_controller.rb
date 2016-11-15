@@ -1,6 +1,7 @@
 require 'json_envelope'
 
 class ApplicationController < ActionController::API
+  before_action :require_api_credentials, only: [:stats]
 
   # a subset of the openid connect spec:
   # http://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
@@ -47,6 +48,24 @@ class ApplicationController < ActionController::API
   private def require_trusted_referrer
     return if trusted_host?(request.referer)
     render status: :forbidden, json: JSONEnvelope.errors('referer' => 'is not a trusted host')
+  end
+
+  private def require_api_credentials
+    auth_strategy = ActionController::HttpAuthentication::Basic
+
+    # SECURITY NOTE
+    #
+    # beware timing attacks! we must not only compare username and password securely to avoid hints
+    # about partial matches, we must also be sure to compare both each time and avoid giving away
+    # a correct guess on the username.
+    authorized = auth_strategy.authenticate(request) do |username, password|
+      [
+        SecureCompare.compare(username, Rails.application.config.api_username),
+        SecureCompare.compare(password, Rails.application.config.api_password)
+      ].all?
+    end
+
+    auth_strategy.authentication_request(self, "Application", nil) unless authorized
   end
 
   private def trusted_host?(uri)

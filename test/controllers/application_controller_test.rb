@@ -23,7 +23,8 @@ class ApplicationControllerTest < ActionDispatch::IntegrationTest
   test '#stats' do
     ActivesTracker.new(1).perform
 
-    get app_stats_path
+    get app_stats_path,
+      headers: API_CREDENTIALS
 
     assert_response(:success)
   end
