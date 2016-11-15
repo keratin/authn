@@ -19,4 +19,12 @@ class ApplicationControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'sig', data['keys'][0]['use']
     assert_equal Rails.application.config.auth_signing_alg, data['keys'][0]['alg']
   end
+
+  test '#stats' do
+    ActivesTracker.new(1).perform
+
+    get app_stats_path
+
+    assert_response(:success)
+  end
 end

@@ -1,4 +1,5 @@
-ActivesTracker = Struct.new(:account_id) do
+ActivesTracker = Struct.new(:account_id)
+class ActivesTracker
   # ISO 8601 date format
   DAY = '%Y-%m-%d'
   DAY_KEY = "actives:#{DAY}"

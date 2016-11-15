@@ -14,4 +14,6 @@ Rails.application.routes.draw do
   #       not fully conform to the openid-connect spec.
   get '/configuration' => 'application#configuration', as: 'app_configuration'
   get '/jwks' => 'application#keys', as: 'app_keys'
+
+  get '/stats' => 'application#stats', as: 'app_stats'
 end

@@ -30,6 +30,12 @@ class ApplicationController < ActionController::API
     }
   end
 
+  def stats
+    render status: :ok, json: {
+      actives: ActivesReporter.new.perform,
+    }
+  end
+
   # when HTTP_REFERER exists, it's a great way to prevent CSRF attacks.
   #
   # an experiment performed in http://seclab.stanford.edu/websec/csrf/csrf.pdf found the
