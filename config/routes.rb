@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     get :logout, action: 'destroy'
   end
 
-  resource :password, only: [:edit]
+  resource :password, only: [:edit, :update]
 
   # NOTE: this does not use .well-known/openid-configuration because this service does
   #       not fully conform to the openid-connect spec.

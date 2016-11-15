@@ -15,4 +15,21 @@ class PasswordsController < ApplicationController
     # no user enumeration at this endpoint
     head :ok
   end
+
+  # params:
+  # * token
+  # * password
+  def update
+    updater = PasswordUpdater.new(params[:token], params[:password])
+
+    if updater.perform
+      establish_session(updater.account.id)
+
+      render status: :created, json: JSONEnvelope.result(
+        id_token: issue_token_from(session)
+      )
+    else
+      render status: :unprocessable_entity, json: JSONEnvelope.errors(updater.errors)
+    end
+  end
 end

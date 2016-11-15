@@ -57,10 +57,8 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
 
     test 'with expired token' do
       account = FactoryGirl.create(:account)
-      token = jwt(account)
+      token = jwt(account, exp: 1.hour.ago)
       updater = PasswordUpdater.new(token, SecureRandom.hex(8))
-
-      Timecop.travel(Rails.application.config.password_reset_expiry + 1)
 
       refute updater.perform
       assert_equal [ErrorCodes::TOKEN_INVALID_OR_EXPIRED], updater.errors[:token]
