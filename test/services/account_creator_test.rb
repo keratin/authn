@@ -32,11 +32,5 @@ class AccountCreatorTest < ActiveSupport::TestCase
       refute creator.perform
       assert_equal [ErrorCodes::PASSWORD_INSECURE], creator.errors[:password]
     end
-
-    test 'with maliciously long password' do
-      creator = AccountCreator.new('username', SecureRandom.hex(150))
-      ms = Benchmark.ms{ creator.perform }
-      assert ms < 500, ms
-    end
   end
 end

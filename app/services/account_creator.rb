@@ -24,18 +24,8 @@ AccountCreator = Struct.new(:username, :password) do
     account unless errors.any?
   end
 
-  # SECURITY NOTE:
-  #
-  # this password complexity algorithm is expensive and scales exponentially to the length
-  # of the provided string. we mitigate simple DoS attacks by only considering the first 72
-  # characters of the password, which is also bcrypt's limit.
-  def password_score
-    return 0 unless password.present?
-    @score ||= Zxcvbn.test(password[0, 72]).score
-  end
-
   private def password_strength
-    if password.present? && password_score < Rails.application.config.minimum_password_score
+    if password.present? && PasswordScorer.new(password).perform < Rails.application.config.minimum_password_score
       errors.add(:password, ErrorCodes::PASSWORD_INSECURE)
     end
   end

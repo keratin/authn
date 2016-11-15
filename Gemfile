@@ -20,6 +20,7 @@ group :test do
   gem 'factory_girl_rails'
   gem 'minitest-stub_any_instance'
   gem 'webmock'
+  gem 'timecop'
 end
 
 group :development do
