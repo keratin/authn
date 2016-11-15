@@ -63,6 +63,8 @@ class ApplicationController < ActionController::API
   end
 
   private def issue_token_from(session)
+    ActivesTracker.new(session[:account_id]).perform
+
     JSON::JWT.new(
       iss: Rails.application.config.base_url,
       sub: session[:account_id],
