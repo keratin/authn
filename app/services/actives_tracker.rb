@@ -1,41 +1,35 @@
 ActivesTracker = Struct.new(:account_id) do
-  # TODO: configurable time zone
-  TZ = 'UTC'
-
   # ISO 8601 date format
   DAY = '%Y-%m-%d'
-
-  # How many day-level HyperLogLog to keep
-  DAY_RETENTION = 365 # one year
+  DAY_KEY = "actives:#{DAY}"
 
   # ISO 8601 week numberings don't perfectly match the Gregorian calendar. The first week of the
   # year doesn't begin until a Monday.
   WEEK = '%G-W%V'
-
-  # How many week-level HyperLogLog to keep
-  WEEK_RETENTION = 104 # two years
+  WEEK_KEY = "actives:#{WEEK}"
 
   # ISO 8601 date format
   MONTH = "%Y-%m"
+  MONTH_KEY = "actives:#{MONTH}"
 
   def perform
-    now = Time.now.in_time_zone(TZ)
-    day = now.strftime(DAY)
-    week = now.strftime(WEEK)
-    month = now.strftime(MONTH)
+    now = Time.now.in_time_zone(Rails.application.config.statistics_time_zone)
+    day_key = now.strftime(DAY_KEY)
+    week_key = now.strftime(WEEK_KEY)
+    month_key = now.strftime(MONTH_KEY)
 
     REDIS.with do |conn|
       conn.pipelined do
         # increment daily
-        conn.pfadd("actives:#{day}", account_id)
-        conn.expire("actives:#{day}", DAY_RETENTION * 86400)
+        conn.pfadd(day_key, account_id)
+        conn.expire(day_key, Rails.application.config.daily_actives_retention * 86400)
 
         # increment weekly
-        conn.pfadd("actives:#{week}", account_id)
-        conn.expire("actives:#{week}", WEEK_RETENTION * 7 * 86400)
+        conn.pfadd(week_key, account_id)
+        conn.expire(week_key, Rails.application.config.weekly_actives_retention * 7 * 86400)
 
         # increment monthly
-        conn.pfadd("actives:#{month}", account_id)
+        conn.pfadd(month_key, account_id)
       end
     end
   end

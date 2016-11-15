@@ -67,3 +67,8 @@ Rails.application.config.application_endpoints = {
 
 # how long is a password reset token valid?
 Rails.application.config.password_reset_expiry = 30.minutes
+
+# the time zone for tracking and reporting daily/weekly/yearly actives.
+Rails.application.config.statistics_time_zone = Time.find_zone!('UTC')
+Rails.application.config.daily_actives_retention = 365  # one year
+Rails.application.config.weekly_actives_retention = 104 # two years
