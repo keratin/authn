@@ -15,7 +15,13 @@ class Account < ApplicationRecord
 
   scope :named, ->(username) { where(username: username) }
 
+  before_save :set_password_changed_at
+
   def authenticate(given_password)
     BCrypt::Password.new(self.password).is_password? given_password
+  end
+
+  private def set_password_changed_at
+    self.password_changed_at = Time.now if password_changed?
   end
 end

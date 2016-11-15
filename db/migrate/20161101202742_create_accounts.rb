@@ -3,7 +3,7 @@ class CreateAccounts < ActiveRecord::Migration[5.0]
     create_table :accounts do |t|
       t.string :username, null: false
       t.string :password, null: false
-      t.datetime :confirmed_at
+      t.datetime :password_changed_at
       t.timestamps
     end
 

@@ -13,11 +13,11 @@
 ActiveRecord::Schema.define(version: 20161101202742) do
 
   create_table "accounts", force: :cascade do |t|
-    t.string   "username",     null: false
-    t.string   "password",     null: false
-    t.datetime "confirmed_at"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.string   "username",            null: false
+    t.string   "password",            null: false
+    t.datetime "password_changed_at"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
     t.index ["username"], name: "index_accounts_on_username", unique: true
   end
 
