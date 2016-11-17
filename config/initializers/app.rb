@@ -75,5 +75,5 @@ Rails.application.config.weekly_actives_retention = 104 # two years
 
 # The credentials necessary to access private API endpoints.
 # This should be paired with TLS.
-Rails.application.config.api_username = ENV['HTTP_AUTH_USERNAME'] || rand(9999999)
-Rails.application.config.api_password = ENV['HTTP_AUTH_PASSWORD'] || rand(9999999)
+Rails.application.config.api_username = ENV['HTTP_AUTH_USERNAME'] || rand(9999999).to_s
+Rails.application.config.api_password = ENV['HTTP_AUTH_PASSWORD'] || rand(9999999).to_s
