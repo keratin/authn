@@ -1,5 +1,3 @@
-# README
-
 Keratin AuthN is an authentication service that keeps you in control of the experience without forcing you to be an expert in web security.
 
 ## Your Data, Your Design
@@ -72,7 +70,7 @@ Your application must then host a form that embeds the token, requests a new pas
                        account_id &
                        token ---->
                  <---------------- emailed token
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
                  <---------------- reset form
     Password &
     Token        ----> update
