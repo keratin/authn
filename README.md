@@ -1,5 +1,7 @@
 Keratin AuthN is an authentication service that keeps you in control of the experience without forcing you to be an expert in web security.
 
+[![Build Status](https://travis-ci.org/keratin/authn.svg?branch=master)](https://travis-ci.org/keratin/authn)
+
 ## Your Data, Your Design
 
 **Flexible Deployment:** bring your own database, deploy to your own infrastructure.
