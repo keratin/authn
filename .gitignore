@@ -21,3 +21,4 @@
 .env
 .rbenv-vars
 config/id_rsa*
+test/id_rsa*
