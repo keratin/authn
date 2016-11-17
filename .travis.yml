@@ -3,3 +3,6 @@ language: ruby
 rvm:
   - 2.3.1
 before_install: gem install bundler -v 1.13.6
+services:
+  - redis-server
+  - sqlite3
