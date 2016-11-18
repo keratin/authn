@@ -89,13 +89,13 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       with_session(account_id: account_id, token: token) do
         get logout_sessions_path,
           params: {
-            redirect_uri: 'https://demo.dev/callback?hello=world'
+            redirect_uri: "https://#{Rails.application.config.client_hosts.first}/callback?hello=world"
           },
           headers: TRUSTED_REFERRER
       end
 
       assert_response(:redirect)
-      assert_redirected_to("https://demo.dev/callback?hello=world")
+      assert_redirected_to("https://#{Rails.application.config.client_hosts.first}/callback?hello=world")
       refute RefreshToken.find(token)
     end
 
@@ -107,7 +107,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
         headers: TRUSTED_REFERRER
 
       assert_response(:redirect)
-      assert_redirected_to("https://demo.dev")
+      assert_redirected_to("https://#{Rails.application.config.client_hosts.first}")
     end
 
     test 'with no redirect' do
@@ -115,7 +115,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
         headers: TRUSTED_REFERRER
 
       assert_response(:redirect)
-      assert_redirected_to("https://demo.dev")
+      assert_redirected_to("https://#{Rails.application.config.client_hosts.first}")
     end
   end
 end
