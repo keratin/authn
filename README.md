@@ -94,6 +94,12 @@ In broad strokes, you want to:
 4. Run migrations
 5. Send traffic!
 
+## Quick Start: Heroku
+
+You can deploy AuthN to Heroku using free plans by simply filling in the configuration options here:
+
+[![Configure and Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/keratin/authn/tree/master)
+
 ## Maximum Security
 
 For maximum security, give AuthN dedicated SQL and Redis databases and be sure that all backups are strongly encrypted at rest. The credentials and accounts data encapsulated by AuthN should not be necessary for data warehousing or business intelligence, so try to minimize their exposure.
