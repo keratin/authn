@@ -1,4 +1,5 @@
-AccountCreator = Struct.new(:username, :password) do
+AccountCreator = Struct.new(:username, :password)
+class AccountCreator
   include ActiveModel::Validations
 
   validates :username, presence: { message: ErrorCodes::USERNAME_MISSING }

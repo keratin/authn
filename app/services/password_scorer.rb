@@ -1,4 +1,5 @@
-PasswordScorer = Struct.new(:password) do
+PasswordScorer = Struct.new(:password)
+class PasswordScorer
   # using a singleton for the tester means that we preload dictionary data on boot
   # and save that performance cost when testing individual passwords. it makes a
   # significant difference even during tests.
