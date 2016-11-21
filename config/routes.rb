@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  root 'metadata#stats'
+
   resources :accounts, only: [:create] do
     get :available, on: :collection
   end
