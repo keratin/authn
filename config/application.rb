@@ -14,7 +14,8 @@ require "rails/test_unit/railtie"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
-Bundler.require(*Rails.groups(URI.parse(ENV['DATABASE_URL']).scheme))
+driver = ENV['DATABASE_URL'] ? URI.parse(ENV['DATABASE_URL']).scheme : :sqlite3
+Bundler.require(*Rails.groups(driver))
 
 module AuthServer
   class Application < Rails::Application
