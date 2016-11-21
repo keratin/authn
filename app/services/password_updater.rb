@@ -28,8 +28,8 @@ class PasswordUpdater
   end
 
   private def token_is_valid_and_fresh
-    if token[:iss] != Rails.application.config.base_url ||
-      token[:aud] != Rails.application.config.base_url ||
+    if token[:iss] != Rails.application.config.authn_url ||
+      token[:aud] != Rails.application.config.authn_url ||
       token[:scope] != PasswordUpdater::SCOPE ||
       token[:exp] <= Time.now.to_i ||
       token[:lock] != account.password_changed_at.to_i

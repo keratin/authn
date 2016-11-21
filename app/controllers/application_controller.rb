@@ -55,7 +55,7 @@ class ApplicationController < ActionController::API
     ActivesTracker.new(session[:account_id]).perform
 
     JSON::JWT.new(
-      iss: Rails.application.config.base_url,
+      iss: Rails.application.config.authn_url,
       sub: session[:account_id],
       aud: Rails.application.config.application_domains[0],
       exp: Time.now.utc.to_i + Rails.application.config.access_token_expiry,

@@ -44,7 +44,7 @@ Rails.application.config.application_domains = ENV['APP_DOMAINS'].split(',')
 # to fetch our public key for JWT verification.
 #
 # e.g. https://auth.service
-Rails.application.config.base_url = ENV['BASE_URL']
+Rails.application.config.authn_url = ENV['AUTHN_URL']
 
 # minimum complexity score from the zxcvbn algorithm, where:
 #

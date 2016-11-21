@@ -102,9 +102,9 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
 
   private def claims(account, overrides = {})
     {
-      iss: Rails.application.config.base_url,
+      iss: Rails.application.config.authn_url,
       sub: account.id,
-      aud: Rails.application.config.base_url,
+      aud: Rails.application.config.authn_url,
       exp: Time.now.utc.to_i + Rails.application.config.password_reset_expiry,
       iat: Time.now.utc.to_i,
       scope: PasswordUpdater::SCOPE,
