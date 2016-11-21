@@ -4,8 +4,8 @@ if Rails.env.test?
   private_key = keypair.to_s
   public_key = keypair.public_key.to_s
 elsif ENV['RSA_PUBLIC_KEY'] && ENV['RSA_PRIVATE_KEY']
-  private_key = ENV['RSA_PRIVATE_KEY']
-  public_key = ENV['RSA_PUBLIC_KEY']
+  private_key = ENV['RSA_PRIVATE_KEY'].gsub('\n', "\n")
+  public_key = ENV['RSA_PUBLIC_KEY'].gsub('\n', "\n")
 else
   key_path = ENV['KEY_PATH'] || Rails.root.join('config', 'id_rsa').to_s
   private_key = File.read(key_path)
