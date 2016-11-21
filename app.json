@@ -16,11 +16,11 @@
     "HTTP_AUTH_PASSWORD": {
       "description": "The HTTP Basic Auth password your application will send for secured back-channel communications."
     },
-    "RSA_PUBLIC_KEY": {
-      "description": "run `ssh-keygen -N '' -f keratin-authn-rsa`, then paste the entire output of `cat keratin-authn-rsa.pub` here"
-    },
     "RSA_PRIVATE_KEY": {
-      "description": "After running the ssh-keygen command above, paste the entire output of `cat keratin-authn-rsa` here"
+      "description": "Run `ssh-keygen -N '' -f keratin-authn-rsa`, then paste the entire output of `cat keratin-authn-rsa` here."
+    },
+    "RSA_PUBLIC_KEY": {
+      "description": "After running the ssh-keygen command above, paste the entire output of `ssh-keygen -e -m pem -f keratin-authn-rsa` here"
     },
     "APP_PASSWORD_RESET_URL": {
       "description": "A back-channel endpoint where AuthN can send password reset tokens for email delivery.",
