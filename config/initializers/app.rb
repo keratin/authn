@@ -69,7 +69,7 @@ Rails.application.config.minimum_password_score = 2
 # for security, each url in production should use https and include a http basic auth username &
 # password.
 Rails.application.config.application_endpoints = {
-  password_reset_uri: URI.parse(ENV['PASSWORD_RESET_URL'])
+  password_reset_uri: URI.parse(ENV['APP_PASSWORD_RESET_URL'])
 }
 
 # how long is a password reset token valid?
