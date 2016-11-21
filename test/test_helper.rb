@@ -3,10 +3,6 @@ ENV['REDIS_URL'] = "redis://localhost:6379/1"
 ENV['DATABASE_URL'] = 'sqlite3:db/test.sqlite3'
 ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'])
 
-keypair = OpenSSL::PKey::RSA.new(512)
-ENV['RSA_PUBLIC_KEY'] = keypair.public_key.to_s
-ENV['RSA_PRIVATE_KEY'] = keypair.to_s
-
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 require 'sucker_punch/testing/inline'

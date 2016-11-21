@@ -1,5 +1,9 @@
 # currently only supports RSA 256
-if ENV['RSA_PUBLIC_KEY'] && ENV['RSA_PRIVATE_KEY']
+if Rails.env.test?
+  keypair = OpenSSL::PKey::RSA.new(512)
+  private_key = keypair.to_s
+  public_key = keypair.public_key.to_s
+elsif ENV['RSA_PUBLIC_KEY'] && ENV['RSA_PRIVATE_KEY']
   private_key = ENV['RSA_PRIVATE_KEY']
   public_key = ENV['RSA_PUBLIC_KEY']
 else
