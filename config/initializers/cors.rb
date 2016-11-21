@@ -7,7 +7,7 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins *Rails.application.config.client_hosts
+    origins *Rails.application.config.application_domains
     resource '/accounts', methods: [:post], headers: :any
     resource '/accounts/available', methods: [:post], headers: :any
     resource '/sessions', methods: [:post], headers: :any

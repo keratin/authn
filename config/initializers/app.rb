@@ -38,7 +38,7 @@ Rails.application.config.access_token_expiry = 1.hour.to_i
 # log out.
 Rails.application.config.refresh_token_expiry = 1.year.to_i
 
-Rails.application.config.client_hosts = [ENV['TRUSTED_HOST']]
+Rails.application.config.application_domains = ENV['APP_DOMAINS'].split(',')
 
 # will be used as issuer for id tokens, and must be a URL that the application can resolve in order
 # to fetch our public key for JWT verification.

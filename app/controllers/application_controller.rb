@@ -38,7 +38,7 @@ class ApplicationController < ActionController::API
     rescue URI::InvalidURIError
     end
 
-    Rails.application.config.client_hosts.include?(host)
+    Rails.application.config.application_domains.include?(host)
   end
 
   private def establish_session(account_id)
@@ -57,7 +57,7 @@ class ApplicationController < ActionController::API
     JSON::JWT.new(
       iss: Rails.application.config.base_url,
       sub: session[:account_id],
-      aud: Rails.application.config.client_hosts[0],
+      aud: Rails.application.config.application_domains[0],
       exp: Time.now.utc.to_i + Rails.application.config.access_token_expiry,
       iat: Time.now.utc.to_i,
       auth_time: session[:created_at].to_i

@@ -17,7 +17,7 @@ require 'webmock/minitest'
 BCrypt::Engine.cost = BCrypt::Engine::MIN_COST
 
 class ActionDispatch::IntegrationTest
-  TRUSTED_REFERRER = {'REFERER' => "https://#{Rails.application.config.client_hosts.sample}"}
+  TRUSTED_REFERRER = {'REFERER' => "https://#{Rails.application.config.application_domains.sample}"}
   UNTRUSTED_REFERRER = {'REFERER' => 'https://evil.com'}
   API_CREDENTIALS = {
     'HTTP_AUTHORIZATION' => ActionController::HttpAuthentication::Basic.encode_credentials(
