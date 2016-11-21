@@ -5,32 +5,25 @@
   "logo": "https://avatars3.githubusercontent.com/u/23507480?v=3&s=200",
   "env": {
     "AUTHN_URL": {
-      "description": "The full URL for this AuthN service",
-      "value": "http://YOURAPPNAME.herokuapp.com"
+      "description": "The full URL for this AuthN service, e.g. http://yourapp-authn.herokuapp.com"
     },
     "APP_DOMAINS": {
-      "description": "A comma-delimited list of domains that integrate with this AuthN service",
-      "value": "yourapp.somewhere"
+      "description": "The application you will integrate with this AuthN service, e.g. 'yourapp.herokuapp.com'"
     },
     "HTTP_AUTH_USERNAME": {
-      "description": "The HTTP Basic Auth username your application will send for secured back-channel communications.",
-      "value": ""
+      "description": "The HTTP Basic Auth username your application will send for secured back-channel communications."
     },
     "HTTP_AUTH_PASSWORD": {
-      "description": "The HTTP Basic Auth password your application will send for secured back-channel communications.",
-      "value": ""
+      "description": "The HTTP Basic Auth password your application will send for secured back-channel communications."
     },
     "RSA_PUBLIC_KEY": {
-      "description": "",
-      "value": "run `ssh-keygen -N '' -f keratin-authn-rsa`, then paste the entire output of `cat keratin-authn-rsa.pub` into here"
+      "description": "run `ssh-keygen -N '' -f keratin-authn-rsa`, then paste the entire output of `cat keratin-authn-rsa.pub` here"
     },
     "RSA_PRIVATE_KEY": {
-      "description": "",
-      "value": "paste the output of `cat keratin-authn-rsa` after running the ssh-keygen command above"
+      "description": "After running the ssh-keygen command above, paste the entire output of `cat keratin-authn-rsa` here"
     },
     "APP_PASSWORD_RESET_URL": {
       "description": "A back-channel endpoint where AuthN can send password reset tokens for email delivery.",
-      "value": "https://username:password@yourapp.somewhere/keratin/password_reset",
       "required": false
     },
     "SECRET_KEY_BASE": {
