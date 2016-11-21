@@ -1,6 +1,7 @@
 ENV['RAILS_ENV'] ||= 'test'
 ENV['REDIS_URL'] = "redis://localhost:6379/1"
 ENV['DATABASE_URL'] = 'sqlite3:db/test.sqlite3'
+ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'])
 
 keypair = OpenSSL::PKey::RSA.new(512)
 ENV['RSA_PUBLIC_KEY'] = keypair.public_key.to_s
