@@ -14,9 +14,9 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
       assert_response(:created)
       assert_json_jwt(JSON.parse(response.body)['result']['id_token']) do |claims|
-        assert_equal 1, claims['sub']
+        assert_equal account.id, claims['sub']
       end
-      assert_equal 1, session[:account_id]
+      assert_equal account.id, session[:account_id]
     end
 
     test 'with unknown account username' do

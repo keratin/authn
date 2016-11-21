@@ -3,6 +3,8 @@ require 'test_helper'
 class AccountsControllerTest < ActionDispatch::IntegrationTest
   testing '#create' do
     test 'with username and password' do
+      account_id = Account.maximum(:id).to_i + 1
+
       post accounts_path,
         params: {
           username: 'username',
@@ -12,9 +14,9 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
       assert_response :created
       assert_json_jwt(JSON.parse(response.body)['result']['id_token']) do |claims|
-        assert_equal 1, claims['sub']
+        assert_equal account_id, claims['sub']
       end
-      assert_equal 1, session[:account_id]
+      assert_equal account_id, session[:account_id]
     end
 
     test 'with missing fields' do
