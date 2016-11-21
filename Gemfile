@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'rails', '~> 5.0.0', '>= 5.0.0.1'
-gem 'sqlite3'
 gem 'puma', '~> 3.0'
 gem 'bcrypt', '~> 3.1.7'
 gem 'rack-cors'
@@ -11,6 +10,17 @@ gem 'hiredis'
 gem 'redis', require: ["redis", "redis/connection/hiredis"]
 gem 'connection_pool'
 gem 'sucker_punch'
+
+# database driver loading is handled by parsing ENV['DATABASE_URL']
+group :sqlite3 do
+  gem 'sqlite3'
+end
+group :mysql do
+  gem 'mysql2'
+end
+group :postgres do
+  gem 'pg'
+end
 
 group :development, :test do
   gem 'byebug', platform: :mri

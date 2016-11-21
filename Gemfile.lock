@@ -82,9 +82,11 @@ GEM
     minitest (5.9.1)
     minitest-stub_any_instance (1.0.1)
     multi_json (1.12.1)
+    mysql2 (0.4.5)
     nio4r (1.2.1)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
+    pg (0.19.0)
     public_suffix (2.0.4)
     puma (3.6.0)
     rack (2.0.1)
@@ -163,6 +165,8 @@ DEPENDENCIES
   json-jwt
   listen (~> 3.0.5)
   minitest-stub_any_instance
+  mysql2
+  pg
   puma (~> 3.0)
   rack-cors
   rails (~> 5.0.0, >= 5.0.0.1)
