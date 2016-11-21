@@ -8,3 +8,4 @@ development:
 
 test:
   <<: *default
+  url: sqlite3:db/test.sqlite3
