@@ -1,12 +1,9 @@
 ENV['RAILS_ENV'] ||= 'test'
 ENV['REDIS_URL'] = "redis://localhost:6379/1"
 
-unless File.exists?('test/id_rsa')
-  keypair = OpenSSL::PKey::RSA.new(512)
-  File.open('test/id_rsa', 'wb'){|f| f << keypair.to_s }
-  File.open('test/id_rsa.pub', 'wb'){|f| f << keypair.public_key.to_s }
-end
-ENV['KEY_PATH'] = 'test/id_rsa'
+keypair = OpenSSL::PKey::RSA.new(512)
+ENV['RSA_PUBLIC_KEY'] = keypair.public_key.to_s
+ENV['RSA_PRIVATE_KEY'] = keypair.to_s
 
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
