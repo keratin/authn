@@ -21,8 +21,12 @@ class AccountsController < ApplicationController
   # params:
   # * username
   def available
-    render status: :ok, json: JSONEnvelope.result(
-      available: !Account.named(params[:username]).exists?
-    )
+    if Account.named(params[:username]).exists?
+      render status: :unprocessable_entity, json: JSONEnvelope.errors(
+        'username' => ErrorCodes::USERNAME_TAKEN
+      )
+    else
+      render status: :ok, json: JSONEnvelope.result(true)
+    end
   end
 end

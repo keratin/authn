@@ -52,7 +52,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         }
 
       assert_response :success
-      assert_json_result('available' => true)
+      assert_json_result(true)
     end
 
     test 'with existing username' do
@@ -63,8 +63,8 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
           username: account.username
         }
 
-      assert_response :success
-      assert_json_result('available' => false)
+      assert_response :unprocessable_entity
+      assert_json_errors('username' => ErrorCodes::USERNAME_TAKEN)
     end
   end
 end
