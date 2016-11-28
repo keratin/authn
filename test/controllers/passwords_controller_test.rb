@@ -11,7 +11,8 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
       get edit_password_path,
         params: {
           username: account.username
-        }
+        },
+        headers: TRUSTED_REFERRER
 
       assert_response(:success)
       assert_requested(:post, password_reset_url) do |req|
@@ -24,7 +25,8 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
       get edit_password_path,
         params: {
           username: 'unknown'
-        }
+        },
+        headers: TRUSTED_REFERRER
 
       assert_response(:success)
     end
@@ -39,7 +41,8 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
         params: {
           token: jwt(account),
           password: password
-        }
+        },
+        headers: TRUSTED_REFERRER
 
       assert_response(:success)
       assert account.reload.authenticate(password)
@@ -47,6 +50,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
         assert_equal account.id, claims['sub']
       end
       assert_equal account.id, session[:account_id]
+      assert_equal 'demo.dev', session[:audience]
     end
 
     test 'with invalid token' do
@@ -56,7 +60,8 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
         params: {
           token: jwt(account, scope: 'OTHER'),
           password: SecureRandom.hex(8)
-        }
+        },
+        headers: TRUSTED_REFERRER
 
       assert_response(:unprocessable_entity)
       assert_json_errors('token' => ErrorCodes::TOKEN_INVALID_OR_EXPIRED)
@@ -69,7 +74,8 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
         params: {
           token: jwt(account, exp: 1.hour.ago),
           password: SecureRandom.hex(8)
-        }
+        },
+        headers: TRUSTED_REFERRER
 
       assert_response(:unprocessable_entity)
       assert_json_errors('token' => ErrorCodes::TOKEN_INVALID_OR_EXPIRED)
@@ -82,7 +88,8 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
         params: {
           token: jwt(account),
           password: 'password'
-        }
+        },
+        headers: TRUSTED_REFERRER
 
       assert_response(:unprocessable_entity)
       assert_json_errors('password' => ErrorCodes::PASSWORD_INSECURE)

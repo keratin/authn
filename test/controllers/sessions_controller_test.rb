@@ -17,6 +17,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
         assert_equal account.id, claims['sub']
       end
       assert_equal account.id, session[:account_id]
+      assert_equal 'demo.dev', session[:audience]
     end
 
     test 'with unknown account username' do

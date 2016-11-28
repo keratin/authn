@@ -1,4 +1,5 @@
 class PasswordsController < ApplicationController
+  before_action :require_trusted_referrer
 
   # params:
   # * username
