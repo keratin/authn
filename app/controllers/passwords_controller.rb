@@ -23,7 +23,7 @@ class PasswordsController < ApplicationController
     updater = PasswordUpdater.new(params[:token], params[:password])
 
     if updater.perform
-      establish_session(updater.account.id)
+      establish_session(updater.account.id, requesting_audience)
 
       render status: :created, json: JSONEnvelope.result(
         id_token: issue_token_from(session)

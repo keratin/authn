@@ -8,7 +8,7 @@ class AccountsController < ApplicationController
     creator = AccountCreator.new(params[:username], params[:password])
 
     if account = creator.perform
-      establish_session(account.id)
+      establish_session(account.id, requesting_audience)
 
       render status: :created, json: JSONEnvelope.result(
         id_token: issue_token_from(session)

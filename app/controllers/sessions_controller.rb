@@ -18,7 +18,7 @@ class SessionsController < ApplicationController
     placeholder = Account::EMPTY_PASSWORDS[BCrypt::Engine.cost]
 
     if BCrypt::Password.new(password || placeholder).is_password?(params[:password])
-      establish_session(account_id)
+      establish_session(account_id, requesting_audience)
       render status: :created, json: JSONEnvelope.result(
         id_token: issue_token_from(session)
       )
@@ -44,7 +44,13 @@ class SessionsController < ApplicationController
     RefreshToken.revoke(session[:token])
     reset_session
 
-    if trusted_host?(params[:redirect_uri])
+    redirect_host = begin
+      URI.parse(params[:redirect_uri]).host
+    rescue URI::InvalidURIError
+      nil
+    end
+
+    if Rails.application.config.application_domains.include?(redirect_host)
       redirect_to params[:redirect_uri]
     else
       redirect_to request.referer

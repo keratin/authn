@@ -10,7 +10,7 @@ class ApplicationController < ActionController::API
   # if this is ever determined insufficient, the backup plan is a custom header set by
   # compatible javascript. stay stateless!
   private def require_trusted_referrer
-    return if trusted_host?(request.referer)
+    return if Rails.application.config.application_domains.include?(requesting_audience)
     render status: :forbidden, json: JSONEnvelope.errors('referer' => 'is not a trusted host')
   end
 
@@ -32,21 +32,19 @@ class ApplicationController < ActionController::API
     auth_strategy.authentication_request(self, "Application", nil) unless authorized
   end
 
-  private def trusted_host?(uri)
-    host = begin
-      URI.parse(uri).host
-    rescue URI::InvalidURIError
-    end
-
-    Rails.application.config.application_domains.include?(host)
+  private def requesting_audience
+    URI.parse(request.referer).host
+  rescue URI::InvalidURIError
+    nil
   end
 
-  private def establish_session(account_id)
+  private def establish_session(account_id, audience)
     # avoid any potential session fixation. whatever session they had before can't be trusted.
     RefreshToken.revoke(session[:token]) if session[:token]
     reset_session
 
     session[:account_id] = account_id
+    session[:audience] = audience
     session[:token] = RefreshToken.create(account_id)
     session[:created_at] = Time.now.to_i
   end
@@ -57,7 +55,7 @@ class ApplicationController < ActionController::API
     JSON::JWT.new(
       iss: Rails.application.config.authn_url,
       sub: session[:account_id],
-      aud: Rails.application.config.application_domains[0],
+      aud: session[:audience],
       exp: Time.now.utc.to_i + Rails.application.config.access_token_expiry,
       iat: Time.now.utc.to_i,
       auth_time: session[:created_at].to_i
