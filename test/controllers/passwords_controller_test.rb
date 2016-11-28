@@ -50,7 +50,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
         assert_equal account.id, claims['sub']
       end
       assert_equal account.id, session[:account_id]
-      assert_equal 'demo.dev', session[:audience]
+      assert_equal Rails.application.config.application_domains.first, session[:audience]
     end
 
     test 'with invalid token' do

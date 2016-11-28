@@ -17,7 +17,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         assert_equal account_id, claims['sub']
       end
       assert_equal account_id, session[:account_id]
-      assert_equal 'demo.dev', session[:audience]
+      assert_equal Rails.application.config.application_domains.first, session[:audience]
     end
 
     test 'with missing fields' do
