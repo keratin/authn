@@ -1,52 +1,18 @@
 Keratin AuthN is an authentication service that keeps you in control of the experience without forcing you to be an expert in web security.
 
+Read more at [keratin.tech](https://keratin.tech).
+
 [![Build Status](https://travis-ci.org/keratin/authn.svg?branch=master)](https://travis-ci.org/keratin/authn)
-
-## Your Data, Your Design
-
-**Flexible Deployment:** bring your own database, deploy to your own infrastructure.
-
-**API Driven:** optimized for custom, bespoke integrations.
-
-**Open Source:** you will never be locked in.
-
-## Secure By Default
-
-**Vault Architecture:** your application never even sees passwords.
-
-**Built from Standards:** adopts everything about OAuth 2.0 and OpenID Connect that is not related to a redirect-based (offsite) flow.
-
-**Hardened Security:** care has been taken to avoid common and uncommon mistakes with best practice solutions.
-
-## Grows With You
-
-**Monolith Compatible:** even if your code is written as a monolith, you're still using services. They just happen to be written (and sometimes hosted) by other people.
-
-**Services Ready:** provides essential authentication infrastructure for your service architecture.
-
-# Features
-
-* Signup
-* Login
-* Score-based password strength policies
-* Username availability endpoint for real-time feedback
-* Revokable sessions
-* Password resets
-* Active Account metrics by Day, Week, and Month
-* Security hardening
-* COMING SOON: Account Archival
-* COMING SOON: Account Locking
-* COMING SOON: Flagged Password Changes
-
-Once the core roadmap is complete, I will be working on a Pro version with advanced features, maintenance and support commitments, and bug bounty policies. If you are interested in the direction of this project and would like to discuss roadmap, please drop by the Issues tracker.
 
 # Integration
 
-Your application is expected to host and manage any user-facing Frontend as well as deliver any appropriate emails. In some cases this means creating an endpoint with which AuthN can coordinate.
+This repository contains a Ruby on Rails API service. Your application is expected to host and manage any frontend (client) code as well as deliver any appropriate emails. In some cases this means creating an endpoint with which AuthN can coordinate.
+
+You will need to integrate client libraries for your application's backend ([Ruby](https://github.com/keratin/authn-rb)) and frontend ([JavaScript](https://github.com/keratin/authn-js)). If you need a new client library, please [submit a request](https://github.com/keratin/authn/issues).
 
 ## Example: Signup
 
-You will render a signup form as usual, but rely on a provided JavaScript library to register the username and password with AuthN in exchange for an ID Token (aka JWT session) that is submitted to your user signup endpoint instead.
+You will render a signup form as usual, but rely on a provided client library to register the username and password with AuthN in exchange for an ID Token (aka JWT session) that is submitted to your user signup endpoint instead.
 
     Your Frontend      AuthN       Your Backend
     ===========================================
@@ -79,7 +45,7 @@ Your application must then host a form that embeds the token, requests a new pas
 
 # Deployment
 
-You can deploy AuthN however you need. Here's what it requires:
+AuthN may be deployed according to your needs. Here's what it requires:
 
 * A Redis server for session tokens, ephemeral data, and activity metrics.
 * A SQL server with ActiveRecord ORM support, like MySQL, PostgreSQL, or SQL Server.
@@ -89,7 +55,7 @@ You can deploy AuthN however you need. Here's what it requires:
 In broad strokes, you want to:
 
 1. Provision a server (or decide to colocate it on an existing server)
-2. Deploy the code (COMING SOON: Docker container)
+2. Deploy the code
 3. Set environment variables to configure the database and other settings
 4. Run migrations
 5. Send traffic!
@@ -107,8 +73,6 @@ For maximum security, give AuthN dedicated SQL and Redis databases and be sure t
 # Work in Progress
 
 This work is actively in progress. Check back soon!
-
-If you're interested in kicking the tires and helping to prioritize the early roadmap, contact me. I expect to offer early bird adopter specials.
 
 # COPYRIGHT & LICENSE
 
