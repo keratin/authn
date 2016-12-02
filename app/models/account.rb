@@ -14,6 +14,7 @@ class Account < ApplicationRecord
   }
 
   scope :named, ->(username) { where(username: username) }
+  scope :active, ->{ where(deleted_at: nil) }
 
   before_save :set_password_changed_at
 

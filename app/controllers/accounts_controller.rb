@@ -1,5 +1,6 @@
 class AccountsController < ApplicationController
   before_action :require_trusted_referrer, only: [:create]
+  before_action :require_api_credentials, only: [:destroy]
 
   # params:
   # * username
@@ -27,6 +28,16 @@ class AccountsController < ApplicationController
       )
     else
       render status: :ok, json: JSONEnvelope.result(true)
+    end
+  end
+
+  # params:
+  # * id
+  def destroy
+    if AccountArchiver.new(params[:id]).perform
+      head :ok
+    else
+      head :not_found
     end
   end
 end

@@ -68,4 +68,23 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
       assert_json_errors('username' => ErrorCodes::USERNAME_TAKEN)
     end
   end
+
+  testing '#destroy' do
+    test 'with known account' do
+      account = FactoryGirl.create(:account)
+
+      delete account_path(account.id),
+        headers: API_CREDENTIALS
+
+      assert_response :ok
+      assert account.reload.deleted_at?
+    end
+
+    test 'with unknown account' do
+      delete account_path(rand(999)),
+        headers: API_CREDENTIALS
+
+      assert_response :not_found
+    end
+  end
 end
