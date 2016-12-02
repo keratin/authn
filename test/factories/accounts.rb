@@ -9,5 +9,11 @@ FactoryGirl.define do
     end
 
     password{ BCrypt::Password.create(clear_password) }
+
+    trait :archived do
+      username nil
+      password nil
+      deleted_at{ Time.zone.now }
+    end
   end
 end

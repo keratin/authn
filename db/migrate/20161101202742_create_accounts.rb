@@ -1,9 +1,10 @@
 class CreateAccounts < ActiveRecord::Migration[5.0]
   def change
     create_table :accounts do |t|
-      t.string :username, null: false
-      t.string :password, null: false
+      t.string :username, null: true
+      t.string :password, null: true
       t.datetime :password_changed_at
+      t.datetime :deleted_at
       t.timestamps
     end
 
