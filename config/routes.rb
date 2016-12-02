@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   root 'metadata#stats'
 
-  resources :accounts, only: [:create] do
+  resources :accounts, only: [:create, :destroy] do
     get :available, on: :collection
   end
 
