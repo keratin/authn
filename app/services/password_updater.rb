@@ -7,6 +7,7 @@ class PasswordUpdater
   validates :password, presence: { message: ErrorCodes::PASSWORD_MISSING }
   validate  :password_strength
   validate  :token_is_valid_and_fresh
+  validates :account, presence: { message: ErrorCodes::ACCOUNT_NOT_FOUND }
 
   def initialize(jwt, password)
     @password = password
@@ -24,7 +25,7 @@ class PasswordUpdater
   end
 
   def account
-    @account ||= Account.find(token[:sub])
+    @account ||= Account.active.find_by_id(token[:sub])
   end
 
   private def token_is_valid_and_fresh
@@ -32,7 +33,7 @@ class PasswordUpdater
       token[:aud] != Rails.application.config.authn_url ||
       token[:scope] != PasswordUpdater::SCOPE ||
       token[:exp] <= Time.now.to_i ||
-      token[:lock] != account.password_changed_at.to_i
+      (account && token[:lock] != account.password_changed_at.to_i)
 
       errors.add(:token, ErrorCodes::TOKEN_INVALID_OR_EXPIRED)
     end

@@ -93,6 +93,14 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
       refute updater.perform
       assert_equal [ErrorCodes::PASSWORD_INSECURE], updater.errors[:password]
     end
+
+    test 'with archived account' do
+      account = FactoryGirl.create(:account, :archived)
+      token = jwt(account)
+      updater = PasswordUpdater.new(token, SecureRandom.hex(8))
+
+      refute updater.perform
+    end
   end
 
   private def jwt(account, claim_overrides = {})
