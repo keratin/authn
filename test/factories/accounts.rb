@@ -15,5 +15,9 @@ FactoryGirl.define do
       password nil
       deleted_at{ Time.zone.now }
     end
+
+    trait :locked do
+      locked true
+    end
   end
 end
