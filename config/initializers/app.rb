@@ -90,3 +90,15 @@ Rails.application.config.weekly_actives_retention = ENV.fetch('WEEKLY_ACTIVES_RE
 # This should be paired with TLS.
 Rails.application.config.api_username = ENV.fetch('HTTP_AUTH_USERNAME', rand(9999999).to_s)
 Rails.application.config.api_password = ENV.fetch('HTTP_AUTH_PASSWORD', rand(9999999).to_s)
+
+# BCrypt costs describe how many times the password should be hashed. Costs are exponential, and may
+# be increased later without waiting for a user to return and log in.
+#
+# The ideal cost is the slowest one that can be performed without login feeling slow and without
+# creating CPU bottlenecks or easy DDOS attacks on your AuthN server. There's no reason to go below
+# 10, and 12 starts to become noticeable.
+#
+# A cost of 10 is 1024 (2^10) iterations, and takes ~0.067 seconds on my laptop.
+# A cost of 11 is 2048 (2^11) iterations, and takes ~0.136 seconds on my laptop.
+# A cost of 12 is 4096 (2^12) iterations, and takes ~0.276 seconds on my laptop.
+BCrypt::Engine.cost = [10, ENV.fetch('BCRYPT_COST', 11)].max
