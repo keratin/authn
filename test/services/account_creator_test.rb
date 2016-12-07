@@ -21,6 +21,13 @@ class AccountCreatorTest < ActiveSupport::TestCase
       assert_equal [ErrorCodes::USERNAME_TAKEN], creator.errors[:username]
     end
 
+    test 'with locked username' do
+      account = FactoryGirl.create(:account, :locked)
+      creator = AccountCreator.new(account.username, SecureRandom.hex(8))
+      refute creator.perform
+      assert_equal [ErrorCodes::USERNAME_TAKEN], creator.errors[:username]
+    end
+
     test 'with missing password' do
       creator = AccountCreator.new('username', nil)
       refute creator.perform

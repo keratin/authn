@@ -5,7 +5,7 @@ class SessionsController < ApplicationController
   # * username
   # * password
   def create
-    account_id, password = Account.named(params[:username]).pluck('id, password').first
+    account = Account.named(params[:username]).first
 
     # SECURITY NOTE
     #
@@ -17,11 +17,15 @@ class SessionsController < ApplicationController
     # from the signup process, which necessarily indicates whether a name is taken or not.
     placeholder = Account::EMPTY_PASSWORDS[BCrypt::Engine.cost]
 
-    if BCrypt::Password.new(password || placeholder).is_password?(params[:password])
-      establish_session(account_id, requesting_audience)
-      render status: :created, json: JSONEnvelope.result(
-        id_token: issue_token_from(session)
-      )
+    if BCrypt::Password.new(account.try(&:password) || placeholder).is_password?(params[:password])
+      if account.locked?
+        render status: :unprocessable_entity, json: JSONEnvelope.errors('account' => ErrorCodes::ACCOUNT_LOCKED)
+      else
+        establish_session(account.id, requesting_audience)
+        render status: :created, json: JSONEnvelope.result(
+          id_token: issue_token_from(session)
+        )
+      end
     else
       render status: :unprocessable_entity, json: JSONEnvelope.errors('credentials' => ErrorCodes::CREDENTIALS_FAILED)
     end

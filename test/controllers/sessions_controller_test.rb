@@ -20,6 +20,20 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       assert_equal Rails.application.config.application_domains.first, session[:audience]
     end
 
+    test 'with locked credentials' do
+      account = FactoryGirl.create(:account, :locked, clear_password: 'valid')
+
+      post sessions_path,
+        params: {
+          username: account.username,
+          password: 'valid'
+        },
+        headers: TRUSTED_REFERRER
+
+      assert_response(:unprocessable_entity)
+      assert_json_errors('account' => ErrorCodes::ACCOUNT_LOCKED)
+    end
+
     test 'with unknown account username' do
       post sessions_path,
         params: {
