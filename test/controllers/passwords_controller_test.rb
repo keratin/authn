@@ -30,6 +30,18 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
 
       assert_response(:success)
     end
+
+    test 'with locked account' do
+      account = FactoryGirl.create(:account, :locked)
+
+      get edit_password_path,
+        params: {
+          username: account.username
+        },
+        headers: TRUSTED_REFERRER
+
+      assert_response(:success)
+    end
   end
 
   testing '#update' do

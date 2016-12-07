@@ -10,7 +10,7 @@ class PasswordsController < ApplicationController
       # using a background job will:
       # * insulate the user from back channel network request overhead
       # * protect this endpoint from user enumeration timing attacks
-      SendResetTokenJob.perform_async(account)
+      SendResetTokenJob.perform_async(account) unless account.locked?
     end
 
     # no user enumeration at this endpoint
