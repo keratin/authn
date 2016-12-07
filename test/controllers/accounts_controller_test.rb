@@ -159,6 +159,9 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         headers: API_CREDENTIALS
 
       assert_response :not_found
+      assert_json_errors(
+        'account' => ErrorCodes::ACCOUNT_NOT_FOUND
+      )
     end
   end
 end

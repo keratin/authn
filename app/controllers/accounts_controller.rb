@@ -61,7 +61,9 @@ class AccountsController < ApplicationController
     if AccountArchiver.new(params[:id]).perform
       head :ok
     else
-      head :not_found
+      render status: :not_found, json: JSONEnvelope.errors(
+        'account' => ErrorCodes::ACCOUNT_NOT_FOUND
+      )
     end
   end
 end
