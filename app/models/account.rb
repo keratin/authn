@@ -22,6 +22,10 @@ class Account < ApplicationRecord
     BCrypt::Password.new(self.password).is_password? given_password
   end
 
+  def sessions
+    @sessions ||= RefreshToken.sessions(id)
+  end
+
   private def set_password_changed_at
     self.password_changed_at = Time.now if password_changed?
   end

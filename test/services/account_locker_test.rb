@@ -9,6 +9,15 @@ class AccountLockerTest < ActiveSupport::TestCase
       assert account.reload.locked?
     end
 
+    test 'with active sessions' do
+      account = FactoryGirl.create(:account)
+      hex = RefreshToken.create(account.id)
+
+      assert RefreshToken.find(hex)
+      AccountLocker.new(account.id).perform
+      refute RefreshToken.find(hex)
+    end
+
     test 'with locked account' do
       account = FactoryGirl.create(:account, :locked)
       assert AccountLocker.new(account.id).perform
