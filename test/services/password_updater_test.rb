@@ -100,6 +100,16 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
       updater = PasswordUpdater.new(token, SecureRandom.hex(8))
 
       refute updater.perform
+      assert_equal [ErrorCodes::ACCOUNT_NOT_FOUND], updater.errors[:account]
+    end
+
+    test 'with locked account' do
+      account = FactoryGirl.create(:account, :locked)
+      token = jwt(account)
+      updater = PasswordUpdater.new(token, SecureRandom.hex(8))
+
+      refute updater.perform
+      assert_equal [ErrorCodes::ACCOUNT_LOCKED], updater.errors[:account]
     end
   end
 

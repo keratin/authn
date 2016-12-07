@@ -67,6 +67,18 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
       assert_response :unprocessable_entity
       assert_json_errors('username' => ErrorCodes::USERNAME_TAKEN)
     end
+
+    test 'with locked username' do
+      account = FactoryGirl.create(:account, :locked)
+
+      get available_accounts_path,
+        params: {
+          username: account.username
+        }
+
+      assert_response :unprocessable_entity
+      assert_json_errors('username' => ErrorCodes::USERNAME_TAKEN)
+    end
   end
 
   testing '#destroy' do

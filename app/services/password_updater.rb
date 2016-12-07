@@ -8,6 +8,7 @@ class PasswordUpdater
   validate  :password_strength
   validate  :token_is_valid_and_fresh
   validates :account, presence: { message: ErrorCodes::ACCOUNT_NOT_FOUND }
+  validate  :account_not_locked
 
   def initialize(jwt, password)
     @password = password
@@ -42,6 +43,12 @@ class PasswordUpdater
   private def password_strength
     if password.present? && PasswordScorer.new(password).perform < Rails.application.config.minimum_password_score
       errors.add(:password, ErrorCodes::PASSWORD_INSECURE)
+    end
+  end
+
+  private def account_not_locked
+    if account && account.locked?
+      errors.add(:account, ErrorCodes::ACCOUNT_LOCKED)
     end
   end
 end
