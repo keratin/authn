@@ -3,6 +3,10 @@ Rails.application.routes.draw do
 
   resources :accounts, only: [:create, :destroy] do
     get :available, on: :collection
+    member do
+      match :lock, via: [:put, :patch]
+      match :unlock, via: [:put, :patch]
+    end
   end
 
   resource  :sessions, only: [:create] do

@@ -1,6 +1,6 @@
 class AccountsController < ApplicationController
   before_action :require_trusted_referrer, only: [:create]
-  before_action :require_api_credentials, only: [:destroy]
+  before_action :require_api_credentials, only: [:lock, :unlock, :destroy]
 
   # params:
   # * username
@@ -28,6 +28,30 @@ class AccountsController < ApplicationController
       )
     else
       render status: :ok, json: JSONEnvelope.result(true)
+    end
+  end
+
+  # params:
+  # * id
+  def lock
+    if AccountLocker.new(params[:id]).perform
+      head :ok
+    else
+      render status: :not_found, json: JSONEnvelope.errors(
+        'account' => ErrorCodes::ACCOUNT_NOT_FOUND
+      )
+    end
+  end
+
+  # params:
+  # * id
+  def unlock
+    if AccountUnlocker.new(params[:id]).perform
+      head :ok
+    else
+      render status: :not_found, json: JSONEnvelope.errors(
+        'account' => ErrorCodes::ACCOUNT_NOT_FOUND
+      )
     end
   end
 

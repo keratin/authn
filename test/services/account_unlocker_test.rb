@@ -5,7 +5,7 @@ class AccountUnlockerTest < ActiveSupport::TestCase
     test 'with active account' do
       account = FactoryGirl.create(:account)
 
-      refute AccountUnlocker.new(account.id).perform
+      assert AccountUnlocker.new(account.id).perform
     end
 
     test 'with locked account' do

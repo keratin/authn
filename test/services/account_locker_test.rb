@@ -11,7 +11,7 @@ class AccountLockerTest < ActiveSupport::TestCase
 
     test 'with locked account' do
       account = FactoryGirl.create(:account, :locked)
-      refute AccountLocker.new(account.id).perform
+      assert AccountLocker.new(account.id).perform
     end
 
     test 'with archived account' do

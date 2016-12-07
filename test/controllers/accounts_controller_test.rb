@@ -81,6 +81,68 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  testing '#lock' do
+    test 'on active account' do
+      account = FactoryGirl.create(:account)
+
+      patch lock_account_path(account.id),
+        headers: API_CREDENTIALS
+
+      assert_response :ok
+      assert account.reload.locked?
+    end
+
+    test 'on locked account' do
+      account = FactoryGirl.create(:account, :locked)
+
+      patch lock_account_path(account.id),
+        headers: API_CREDENTIALS
+
+      assert_response :ok
+    end
+
+    test 'on unknown account' do
+      patch lock_account_path(0),
+        headers: API_CREDENTIALS
+
+      assert_response :not_found
+      assert_json_errors(
+        'account' => ErrorCodes::ACCOUNT_NOT_FOUND
+      )
+    end
+  end
+
+  testing '#unlock' do
+    test 'on active account' do
+      account = FactoryGirl.create(:account)
+
+      patch lock_account_path(account.id),
+        headers: API_CREDENTIALS
+
+      assert_response :ok
+    end
+
+    test 'on locked account' do
+      account = FactoryGirl.create(:account, :locked)
+
+      patch unlock_account_path(account.id),
+        headers: API_CREDENTIALS
+
+      assert_response :ok
+      refute account.reload.locked?
+    end
+
+    test 'on unknown account' do
+      patch lock_account_path(0),
+        headers: API_CREDENTIALS
+
+      assert_response :not_found
+      assert_json_errors(
+        'account' => ErrorCodes::ACCOUNT_NOT_FOUND
+      )
+    end
+  end
+
   testing '#destroy' do
     test 'with known account' do
       account = FactoryGirl.create(:account)
