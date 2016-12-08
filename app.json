@@ -5,7 +5,7 @@
   "logo": "https://avatars3.githubusercontent.com/u/23507480?v=3&s=200",
   "env": {
     "AUTHN_URL": {
-      "description": "The full URL for this AuthN service, e.g. http://yourapp-authn.herokuapp.com"
+      "description": "The full URL for this AuthN service, e.g. https://yourapp-authn.herokuapp.com"
     },
     "APP_DOMAINS": {
       "description": "The application you will integrate with this AuthN service, e.g. 'yourapp.herokuapp.com'"
