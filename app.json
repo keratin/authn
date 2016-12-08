@@ -22,10 +22,6 @@
     "RSA_PUBLIC_KEY": {
       "description": "After running the ssh-keygen command above, paste the entire output of `ssh-keygen -e -m pem -f keratin-authn-rsa` here"
     },
-    "APP_PASSWORD_RESET_URL": {
-      "description": "A back-channel endpoint where AuthN can send password reset tokens for email delivery.",
-      "required": false
-    },
     "SECRET_KEY_BASE": {
       "description": "Key used to securely sign AuthN session cookies",
       "generator": "secret"
