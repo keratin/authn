@@ -1,11 +1,10 @@
 class PasswordUpdater
   SCOPE = 'reset'
   include ActiveModel::Validations
+  include Account::PasswordValidations
 
   attr_reader :token, :password
 
-  validates :password, presence: { message: ErrorCodes::PASSWORD_MISSING }
-  validate  :password_strength
   validate  :token_is_valid_and_fresh
   validates :account, presence: { message: ErrorCodes::ACCOUNT_NOT_FOUND }
   validate  :account_not_locked
@@ -37,12 +36,6 @@ class PasswordUpdater
       (account && token[:lock] != account.password_changed_at.to_i)
 
       errors.add(:token, ErrorCodes::TOKEN_INVALID_OR_EXPIRED)
-    end
-  end
-
-  private def password_strength
-    if password.present? && PasswordScorer.new(password).perform < Rails.application.config.minimum_password_score
-      errors.add(:password, ErrorCodes::PASSWORD_INSECURE)
     end
   end
 
