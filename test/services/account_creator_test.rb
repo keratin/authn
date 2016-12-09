@@ -39,5 +39,19 @@ class AccountCreatorTest < ActiveSupport::TestCase
       refute creator.perform
       assert_equal [ErrorCodes::PASSWORD_INSECURE], creator.errors[:password]
     end
+
+    test 'with short username' do
+      creator = AccountCreator.new('a', SecureRandom.hex(8))
+      refute creator.perform
+      assert_equal [ErrorCodes::FORMAT], creator.errors[:username]
+    end
+
+    test 'with plain name when emails are expected' do
+      with_config(:email_usernames, true) do
+        creator = AccountCreator.new('username', SecureRandom.hex(8))
+        refute creator.perform
+        assert_equal [ErrorCodes::FORMAT], creator.errors[:username]
+      end
+    end
   end
 end

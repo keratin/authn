@@ -1,4 +1,6 @@
 class Account < ApplicationRecord
+  USERNAME_MIN_LENGTH = 3
+
   # these are bcrypt hashes for an empty string, useful for performing
   # fake comparisons to mitigate timing attacks.
   EMPTY_PASSWORDS = {

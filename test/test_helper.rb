@@ -48,6 +48,16 @@ class ActiveSupport::TestCase
     end
   end
 
+  def with_config(key, value)
+    previous_value = Rails.application.config.send(key)
+    begin
+      Rails.application.config.send("#{key}=", value)
+      yield
+    ensure
+      Rails.application.config.send("#{key}=", previous_value)
+    end
+  end
+
   private
 
   def assert_json_jwt(str)

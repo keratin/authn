@@ -101,4 +101,7 @@ Rails.application.config.api_password = ENV.fetch('HTTP_AUTH_PASSWORD', rand(999
 # A cost of 10 is 1024 (2^10) iterations, and takes ~0.067 seconds on my laptop.
 # A cost of 11 is 2048 (2^11) iterations, and takes ~0.136 seconds on my laptop.
 # A cost of 12 is 4096 (2^12) iterations, and takes ~0.276 seconds on my laptop.
-BCrypt::Engine.cost = [10, ENV.fetch('BCRYPT_COST', 11)].max
+BCrypt::Engine.cost = [10, ENV.fetch('BCRYPT_COST', 11).to_i].max
+
+#
+Rails.application.config.email_usernames = ENV.fetch('USERNAME_IS_EMAIL', false).to_s.downcase.in? ['t', 'true', 'yes']
