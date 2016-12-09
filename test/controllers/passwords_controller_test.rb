@@ -76,7 +76,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
         headers: TRUSTED_REFERRER
 
       assert_response(:unprocessable_entity)
-      assert_json_errors('token' => ErrorCodes::TOKEN_INVALID_OR_EXPIRED)
+      assert_json_errors('token' => ErrorCodes::INVALID_OR_EXPIRED)
     end
 
     test 'with expired token' do
@@ -90,7 +90,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
         headers: TRUSTED_REFERRER
 
       assert_response(:unprocessable_entity)
-      assert_json_errors('token' => ErrorCodes::TOKEN_INVALID_OR_EXPIRED)
+      assert_json_errors('token' => ErrorCodes::INVALID_OR_EXPIRED)
     end
 
     test 'with weak password' do
@@ -104,7 +104,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
         headers: TRUSTED_REFERRER
 
       assert_response(:unprocessable_entity)
-      assert_json_errors('password' => ErrorCodes::PASSWORD_INSECURE)
+      assert_json_errors('password' => ErrorCodes::INSECURE)
     end
   end
 

@@ -34,7 +34,7 @@ class Account < ApplicationRecord
 
   module UsernameValidations
     def self.included(base)
-      base.validates :username, presence: { message: ErrorCodes::USERNAME_MISSING }
+      base.validates :username, presence: { message: ErrorCodes::MISSING }
       base.validate  :username_format
     end
 
@@ -50,22 +50,22 @@ class Account < ApplicationRecord
       return if username.blank?
 
       if Rails.application.config.email_usernames
-        errors.add(:username, ErrorCodes::FORMAT) unless username =~ EMAIL
+        errors.add(:username, ErrorCodes::FORMAT_INVALID) unless username =~ EMAIL
       elsif username.length < Account::USERNAME_MIN_LENGTH
-        errors.add(:username, ErrorCodes::FORMAT)
+        errors.add(:username, ErrorCodes::FORMAT_INVALID)
       end
     end
   end
 
   module PasswordValidations
     def self.included(base)
-      base.validates :password, presence: { message: ErrorCodes::PASSWORD_MISSING }
+      base.validates :password, presence: { message: ErrorCodes::MISSING }
       base.validate  :password_strength
     end
 
     private def password_strength
       if password.present? && PasswordScorer.new(password).perform < Rails.application.config.minimum_password_score
-        errors.add(:password, ErrorCodes::PASSWORD_INSECURE)
+        errors.add(:password, ErrorCodes::INSECURE)
       end
     end
   end

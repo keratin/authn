@@ -25,7 +25,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
       updater = PasswordUpdater.new('', SecureRandom.hex(8))
 
       refute updater.perform
-      assert_equal [ErrorCodes::TOKEN_INVALID_OR_EXPIRED], updater.errors[:token]
+      assert_equal [ErrorCodes::INVALID_OR_EXPIRED], updater.errors[:token]
     end
 
     test 'with tampered token' do
@@ -34,7 +34,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
       updater = PasswordUpdater.new(token, SecureRandom.hex(8))
 
       refute updater.perform
-      assert_equal [ErrorCodes::TOKEN_INVALID_OR_EXPIRED], updater.errors[:token]
+      assert_equal [ErrorCodes::INVALID_OR_EXPIRED], updater.errors[:token]
     end
 
     test 'with valid token from malicious issuer' do
@@ -43,7 +43,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
       updater = PasswordUpdater.new(token, SecureRandom.hex(8))
 
       refute updater.perform
-      assert_equal [ErrorCodes::TOKEN_INVALID_OR_EXPIRED], updater.errors[:token]
+      assert_equal [ErrorCodes::INVALID_OR_EXPIRED], updater.errors[:token]
     end
 
     test 'with repurposed token' do
@@ -52,7 +52,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
       updater = PasswordUpdater.new(token, SecureRandom.hex(8))
 
       refute updater.perform
-      assert_equal [ErrorCodes::TOKEN_INVALID_OR_EXPIRED], updater.errors[:token]
+      assert_equal [ErrorCodes::INVALID_OR_EXPIRED], updater.errors[:token]
     end
 
     test 'with expired token' do
@@ -61,7 +61,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
       updater = PasswordUpdater.new(token, SecureRandom.hex(8))
 
       refute updater.perform
-      assert_equal [ErrorCodes::TOKEN_INVALID_OR_EXPIRED], updater.errors[:token]
+      assert_equal [ErrorCodes::INVALID_OR_EXPIRED], updater.errors[:token]
     end
 
     test 'when password has been changed since issuing token' do
@@ -73,7 +73,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
       assert updater.perform
 
       refute updater.perform
-      assert_equal [ErrorCodes::TOKEN_INVALID_OR_EXPIRED], updater.errors[:token]
+      assert_equal [ErrorCodes::INVALID_OR_EXPIRED], updater.errors[:token]
     end
 
     test 'with a missing password' do
@@ -82,7 +82,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
       updater = PasswordUpdater.new(token, '')
 
       refute updater.perform
-      assert_equal [ErrorCodes::PASSWORD_MISSING], updater.errors[:password]
+      assert_equal [ErrorCodes::MISSING], updater.errors[:password]
     end
 
     test 'with a weak password' do
@@ -91,7 +91,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
       updater = PasswordUpdater.new(token, 'password')
 
       refute updater.perform
-      assert_equal [ErrorCodes::PASSWORD_INSECURE], updater.errors[:password]
+      assert_equal [ErrorCodes::INSECURE], updater.errors[:password]
     end
 
     test 'with archived account' do
@@ -100,7 +100,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
       updater = PasswordUpdater.new(token, SecureRandom.hex(8))
 
       refute updater.perform
-      assert_equal [ErrorCodes::ACCOUNT_NOT_FOUND], updater.errors[:account]
+      assert_equal [ErrorCodes::NOT_FOUND], updater.errors[:account]
     end
 
     test 'with locked account' do
@@ -109,7 +109,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
       updater = PasswordUpdater.new(token, SecureRandom.hex(8))
 
       refute updater.perform
-      assert_equal [ErrorCodes::ACCOUNT_LOCKED], updater.errors[:account]
+      assert_equal [ErrorCodes::LOCKED], updater.errors[:account]
     end
   end
 

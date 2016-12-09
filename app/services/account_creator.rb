@@ -16,7 +16,7 @@ class AccountCreator
         )
       rescue ActiveRecord::RecordNotUnique
         # forgiveness is faster than permission
-        errors.add(:username, ErrorCodes::USERNAME_TAKEN)
+        errors.add(:username, ErrorCodes::TAKEN)
       end
     end
 

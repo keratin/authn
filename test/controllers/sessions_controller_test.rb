@@ -31,7 +31,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
         headers: TRUSTED_REFERRER
 
       assert_response(:unprocessable_entity)
-      assert_json_errors('account' => ErrorCodes::ACCOUNT_LOCKED)
+      assert_json_errors('account' => ErrorCodes::LOCKED)
     end
 
     test 'with unknown account username' do
@@ -43,7 +43,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
         headers: TRUSTED_REFERRER
 
       assert_response(:unprocessable_entity)
-      assert_json_errors('credentials' => ErrorCodes::CREDENTIALS_FAILED)
+      assert_json_errors('credentials' => ErrorCodes::FAILED)
     end
 
     test 'with bad password' do
@@ -57,7 +57,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
         headers: TRUSTED_REFERRER
 
       assert_response(:unprocessable_entity)
-      assert_json_errors('credentials' => ErrorCodes::CREDENTIALS_FAILED)
+      assert_json_errors('credentials' => ErrorCodes::FAILED)
     end
 
     test 'with untrusted referer' do

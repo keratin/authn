@@ -6,7 +6,7 @@ class PasswordUpdater
   attr_reader :token, :password
 
   validate  :token_is_valid_and_fresh
-  validates :account, presence: { message: ErrorCodes::ACCOUNT_NOT_FOUND }
+  validates :account, presence: { message: ErrorCodes::NOT_FOUND }
   validate  :account_not_locked
 
   def initialize(jwt, password)
@@ -35,13 +35,13 @@ class PasswordUpdater
       token[:exp] <= Time.now.to_i ||
       (account && token[:lock] != account.password_changed_at.to_i)
 
-      errors.add(:token, ErrorCodes::TOKEN_INVALID_OR_EXPIRED)
+      errors.add(:token, ErrorCodes::INVALID_OR_EXPIRED)
     end
   end
 
   private def account_not_locked
     if account && account.locked?
-      errors.add(:account, ErrorCodes::ACCOUNT_LOCKED)
+      errors.add(:account, ErrorCodes::LOCKED)
     end
   end
 end

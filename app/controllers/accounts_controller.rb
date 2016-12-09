@@ -24,7 +24,7 @@ class AccountsController < ApplicationController
   def available
     if Account.named(params[:username]).exists?
       render status: :unprocessable_entity, json: JSONEnvelope.errors(
-        'username' => ErrorCodes::USERNAME_TAKEN
+        'username' => ErrorCodes::TAKEN
       )
     else
       render status: :ok, json: JSONEnvelope.result(true)
@@ -38,7 +38,7 @@ class AccountsController < ApplicationController
       head :ok
     else
       render status: :not_found, json: JSONEnvelope.errors(
-        'account' => ErrorCodes::ACCOUNT_NOT_FOUND
+        'account' => ErrorCodes::NOT_FOUND
       )
     end
   end
@@ -50,7 +50,7 @@ class AccountsController < ApplicationController
       head :ok
     else
       render status: :not_found, json: JSONEnvelope.errors(
-        'account' => ErrorCodes::ACCOUNT_NOT_FOUND
+        'account' => ErrorCodes::NOT_FOUND
       )
     end
   end
@@ -62,7 +62,7 @@ class AccountsController < ApplicationController
       head :ok
     else
       render status: :not_found, json: JSONEnvelope.errors(
-        'account' => ErrorCodes::ACCOUNT_NOT_FOUND
+        'account' => ErrorCodes::NOT_FOUND
       )
     end
   end

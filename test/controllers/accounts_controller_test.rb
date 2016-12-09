@@ -27,8 +27,8 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
       assert_response :unprocessable_entity
       assert_json_errors(
-        'username' => ErrorCodes::USERNAME_MISSING,
-        'password' => ErrorCodes::PASSWORD_MISSING
+        'username' => ErrorCodes::MISSING,
+        'password' => ErrorCodes::MISSING
       )
     end
 
@@ -65,7 +65,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         }
 
       assert_response :unprocessable_entity
-      assert_json_errors('username' => ErrorCodes::USERNAME_TAKEN)
+      assert_json_errors('username' => ErrorCodes::TAKEN)
     end
 
     test 'with locked username' do
@@ -77,7 +77,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         }
 
       assert_response :unprocessable_entity
-      assert_json_errors('username' => ErrorCodes::USERNAME_TAKEN)
+      assert_json_errors('username' => ErrorCodes::TAKEN)
     end
   end
 
@@ -107,7 +107,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
       assert_response :not_found
       assert_json_errors(
-        'account' => ErrorCodes::ACCOUNT_NOT_FOUND
+        'account' => ErrorCodes::NOT_FOUND
       )
     end
   end
@@ -138,7 +138,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
       assert_response :not_found
       assert_json_errors(
-        'account' => ErrorCodes::ACCOUNT_NOT_FOUND
+        'account' => ErrorCodes::NOT_FOUND
       )
     end
   end
@@ -160,7 +160,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
       assert_response :not_found
       assert_json_errors(
-        'account' => ErrorCodes::ACCOUNT_NOT_FOUND
+        'account' => ErrorCodes::NOT_FOUND
       )
     end
   end

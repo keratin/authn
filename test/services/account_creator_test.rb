@@ -11,46 +11,46 @@ class AccountCreatorTest < ActiveSupport::TestCase
     test 'with missing username' do
       creator = AccountCreator.new(nil, SecureRandom.hex(8))
       refute creator.perform
-      assert_equal [ErrorCodes::USERNAME_MISSING], creator.errors[:username]
+      assert_equal [ErrorCodes::MISSING], creator.errors[:username]
     end
 
     test 'with duplicate username' do
       account = FactoryGirl.create(:account)
       creator = AccountCreator.new(account.username, SecureRandom.hex(8))
       refute creator.perform
-      assert_equal [ErrorCodes::USERNAME_TAKEN], creator.errors[:username]
+      assert_equal [ErrorCodes::TAKEN], creator.errors[:username]
     end
 
     test 'with locked username' do
       account = FactoryGirl.create(:account, :locked)
       creator = AccountCreator.new(account.username, SecureRandom.hex(8))
       refute creator.perform
-      assert_equal [ErrorCodes::USERNAME_TAKEN], creator.errors[:username]
+      assert_equal [ErrorCodes::TAKEN], creator.errors[:username]
     end
 
     test 'with missing password' do
       creator = AccountCreator.new('username', nil)
       refute creator.perform
-      assert_equal [ErrorCodes::PASSWORD_MISSING], creator.errors[:password]
+      assert_equal [ErrorCodes::MISSING], creator.errors[:password]
     end
 
     test 'with a weak password' do
       creator = AccountCreator.new('username', 'secret')
       refute creator.perform
-      assert_equal [ErrorCodes::PASSWORD_INSECURE], creator.errors[:password]
+      assert_equal [ErrorCodes::INSECURE], creator.errors[:password]
     end
 
     test 'with short username' do
       creator = AccountCreator.new('a', SecureRandom.hex(8))
       refute creator.perform
-      assert_equal [ErrorCodes::FORMAT], creator.errors[:username]
+      assert_equal [ErrorCodes::FORMAT_INVALID], creator.errors[:username]
     end
 
     test 'with plain name when emails are expected' do
       with_config(:email_usernames, true) do
         creator = AccountCreator.new('username', SecureRandom.hex(8))
         refute creator.perform
-        assert_equal [ErrorCodes::FORMAT], creator.errors[:username]
+        assert_equal [ErrorCodes::FORMAT_INVALID], creator.errors[:username]
       end
     end
   end

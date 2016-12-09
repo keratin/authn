@@ -19,7 +19,7 @@ class SessionsController < ApplicationController
 
     if BCrypt::Password.new(account.try(&:password) || placeholder).is_password?(params[:password])
       if account.locked?
-        render status: :unprocessable_entity, json: JSONEnvelope.errors('account' => ErrorCodes::ACCOUNT_LOCKED)
+        render status: :unprocessable_entity, json: JSONEnvelope.errors('account' => ErrorCodes::LOCKED)
       else
         establish_session(account.id, requesting_audience)
         render status: :created, json: JSONEnvelope.result(
@@ -27,7 +27,7 @@ class SessionsController < ApplicationController
         )
       end
     else
-      render status: :unprocessable_entity, json: JSONEnvelope.errors('credentials' => ErrorCodes::CREDENTIALS_FAILED)
+      render status: :unprocessable_entity, json: JSONEnvelope.errors('credentials' => ErrorCodes::FAILED)
     end
   end
 
