@@ -100,4 +100,4 @@ Rails.application.config.api_password = ENV.fetch('HTTP_AUTH_PASSWORD', rand(999
 BCrypt::Engine.cost = [10, ENV.fetch('BCRYPT_COST', 11).to_i].max
 
 #
-Rails.application.config.email_usernames = ENV.fetch('USERNAME_IS_EMAIL', false).to_s.downcase.in? ['t', 'true', 'yes']
+Rails.application.config.email_usernames = ENV.fetch('USERNAME_IS_EMAIL', false).to_s =~ /^t|true|yes$/i
