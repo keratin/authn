@@ -6,10 +6,6 @@ if Rails.env.test?
 elsif ENV['RSA_PUBLIC_KEY'] && ENV['RSA_PRIVATE_KEY']
   private_key = ENV['RSA_PRIVATE_KEY'].gsub('\n', "\n")
   public_key = ENV['RSA_PUBLIC_KEY'].gsub('\n', "\n")
-else
-  key_path = ENV['KEY_PATH'] || Rails.root.join('config', 'id_rsa').to_s
-  private_key = File.read(key_path)
-  public_key = File.read(key_path + '.pub')
 end
 Rails.application.config.auth_private_key = OpenSSL::PKey::RSA.new(private_key)
 Rails.application.config.auth_public_key = OpenSSL::PKey::RSA.new(public_key)
