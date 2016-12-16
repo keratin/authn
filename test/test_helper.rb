@@ -1,5 +1,4 @@
 ENV['RAILS_ENV'] ||= 'test'
-ENV['REDIS_URL'] = "redis://localhost:6379/1"
 
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'

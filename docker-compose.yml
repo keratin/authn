@@ -1,0 +1,17 @@
+version: '2'
+services:
+  redis:
+    image: redis
+  test:
+    image: keratin/authn
+    depends_on:
+      - redis
+    command: bin/rails test
+    environment:
+      - SECRET_KEY_BASE=notsosecret
+      - APP_DOMAINS=example.com
+      - HTTP_AUTH_USERNAME=hello
+      - HTTP_AUTH_PASSWORD=world
+      - AUTHN_URL=http://auth.dev
+      - REDIS_URL=redis://redis/1
+      - APP_PASSWORD_RESET_URL=https://example.com/keratin/password_reset
