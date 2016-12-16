@@ -3,6 +3,18 @@ services:
   redis:
     image: redis
 
+  web:
+    image: keratin/authn
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - redis
+    env_file: .env
+    environment:
+      - REDIS_URL=redis://redis/0
+
   test-base:
     image: keratin/authn
     command: bin/rails test
