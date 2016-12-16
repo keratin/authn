@@ -9,7 +9,13 @@ before_install:
   - docker build -t keratin/authn .
 
 script:
-  - docker run keratin/authn bin/rails test
+  - docker run -e SECRET_KEY_BASE=notsosecret
+               -e APP_DOMAINS=example.com
+               -e HTTP_AUTH_USERNAME=hello
+               -e HTTP_AUTH_PASSWORD=world
+               -e AUTHN_URL=http://auth.dev
+              keratin/authn
+              bin/rails test
 
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
