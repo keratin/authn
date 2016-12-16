@@ -2,10 +2,9 @@ version: '2'
 services:
   redis:
     image: redis
-  test:
+
+  test-base:
     image: keratin/authn
-    depends_on:
-      - redis
     command: bin/rails test
     environment:
       - SECRET_KEY_BASE=notsosecret
@@ -15,3 +14,15 @@ services:
       - AUTHN_URL=http://auth.dev
       - REDIS_URL=redis://redis/1
       - APP_PASSWORD_RESET_URL=https://example.com/keratin/password_reset
+  travis:
+    extends:
+      service: test-base
+    depends_on:
+      - redis
+  test:
+    extends:
+      service: test-base
+    depends_on:
+      - redis
+    volumes:
+      - .:/usr/src/app

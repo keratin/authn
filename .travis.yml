@@ -9,7 +9,7 @@ before_install:
   - docker build -t keratin/authn .
 
 script:
-  - docker-compose run test
+  - docker-compose run travis
 
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
