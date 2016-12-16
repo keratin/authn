@@ -7,13 +7,14 @@ services:
     image: keratin/authn
     command: bin/rails test
     environment:
-      - SECRET_KEY_BASE=notsosecret
       - APP_DOMAINS=example.com
-      - HTTP_AUTH_USERNAME=hello
-      - HTTP_AUTH_PASSWORD=world
-      - AUTHN_URL=http://auth.dev
-      - REDIS_URL=redis://redis/1
       - APP_PASSWORD_RESET_URL=https://example.com/keratin/password_reset
+      - AUTHN_URL=http://auth.dev
+      - DATABASE_URL=sqlite3:db/test.sqlite3
+      - HTTP_AUTH_PASSWORD=world
+      - HTTP_AUTH_USERNAME=hello
+      - REDIS_URL=redis://redis/1
+      - SECRET_KEY_BASE=notsosecret
   travis:
     extends:
       service: test-base
