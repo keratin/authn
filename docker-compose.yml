@@ -11,7 +11,6 @@ services:
       - .:/usr/src/app
     depends_on:
       - redis
-    env_file: .env
     environment:
       - REDIS_URL=redis://redis/0
 
