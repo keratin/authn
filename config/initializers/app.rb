@@ -1,11 +1,21 @@
+class MissingConfiguration < StandardError
+  def initialize(name)
+    super "Missing environment variable: #{name}. See https://github.com/keratin/authn/wiki/Server-Configuration for details."
+  end
+end
+
+def require_env(name)
+  ENV[name] || raise(MissingConfiguration.new(name))
+end
+
 # currently only supports RSA 256
 if Rails.env.test?
   keypair = OpenSSL::PKey::RSA.new(512)
   private_key = keypair.to_s
   public_key = keypair.public_key.to_s
-elsif ENV['RSA_PUBLIC_KEY'] && ENV['RSA_PRIVATE_KEY']
-  private_key = ENV['RSA_PRIVATE_KEY'].gsub('\n', "\n")
-  public_key = ENV['RSA_PUBLIC_KEY'].gsub('\n', "\n")
+else
+  private_key = require_env('RSA_PRIVATE_KEY').gsub('\n', "\n")
+  public_key = require_env('RSA_PUBLIC_KEY').gsub('\n', "\n")
 end
 Rails.application.config.auth_private_key = OpenSSL::PKey::RSA.new(private_key)
 Rails.application.config.auth_public_key = OpenSSL::PKey::RSA.new(public_key)
@@ -45,13 +55,13 @@ Rails.application.config.access_token_expiry = ENV.fetch('ACCESS_TOKEN_TTL', 1.h
 # log out.
 Rails.application.config.refresh_token_expiry = ENV.fetch('REFRESH_TOKEN_TTL', 1.year.to_i)
 
-Rails.application.config.application_domains = ENV['APP_DOMAINS'].split(',')
+Rails.application.config.application_domains = require_env('APP_DOMAINS').split(',')
 
 # will be used as issuer for id tokens, and must be a URL that the application can resolve in order
 # to fetch our public key for JWT verification.
 #
 # e.g. https://auth.service
-Rails.application.config.authn_url = ENV['AUTHN_URL']
+Rails.application.config.authn_url = require_env('AUTHN_URL')
 
 # minimum complexity score from the zxcvbn algorithm, where:
 #
