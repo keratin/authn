@@ -1,0 +1,49 @@
+version: '2'
+services:
+  redis:
+    image: redis
+
+  web:
+    image: keratin/authn
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - redis
+    environment:
+      - APP_DOMAINS
+      - APP_PASSWORD_RESET_URL
+      - AUTHN_URL
+      - DATABASE_URL
+      - HTTP_AUTH_PASSWORD
+      - HTTP_AUTH_USERNAME
+      - REDIS_URL=redis://redis/0
+      - RSA_PRIVATE_KEY
+      - RSA_PUBLIC_KEY
+      - SECRET_KEY_BASE
+
+  test-base:
+    image: keratin/authn
+    command: bin/rails test
+    environment:
+      - APP_DOMAINS=example.com
+      - APP_PASSWORD_RESET_URL=https://example.com/keratin/password_reset
+      - AUTHN_URL=http://auth.dev
+      - DATABASE_URL=sqlite3:db/test.sqlite3
+      - HTTP_AUTH_PASSWORD=world
+      - HTTP_AUTH_USERNAME=hello
+      - REDIS_URL=redis://redis/1
+      - SECRET_KEY_BASE=notsosecret
+  travis:
+    extends:
+      service: test-base
+    depends_on:
+      - redis
+  test:
+    extends:
+      service: test-base
+    depends_on:
+      - redis
+    volumes:
+      - .:/usr/src/app

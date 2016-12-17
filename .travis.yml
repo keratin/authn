@@ -1,8 +1,18 @@
-sudo: false
+sudo: required
+
 language: ruby
-rvm:
-  - 2.3.1
-before_install: gem install bundler -v 1.13.6
+
 services:
-  - redis-server
-  - sqlite3
+  - docker
+
+install:
+  - docker build -t keratin/authn .
+
+script:
+  - docker-compose run travis
+
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker push keratin/authn;
+    fi

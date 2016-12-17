@@ -70,6 +70,17 @@ You can deploy AuthN to Heroku using free plans by simply filling in the configu
 
 For maximum security, give AuthN dedicated SQL and Redis databases and be sure that all backups are strongly encrypted at rest. The credentials and accounts data encapsulated by AuthN should not be necessary for data warehousing or business intelligence, so try to minimize their exposure.
 
+# Developing
+
+TODO: better support for setting up minimum ENV vars
+
+AuthN works great with a setup similar to `rbenv`, `bundler`, `puma-dev`, and `.rbenv-vars`.
+
+If you do not already have a setup like that, try Docker. Once you've installed Docker for your OS, you can run:
+
+* `docker-compose up web` to start AuthN on localhost:3000
+* `docker-compose run test` to run the test suite (with uncommitted changes)
+
 # Work in Progress
 
 This work is actively in progress. Check back soon!
