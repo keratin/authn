@@ -12,7 +12,7 @@ script:
   - docker-compose run travis
 
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "docker" ]; then
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
     docker push keratin/authn;
     fi
