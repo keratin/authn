@@ -110,6 +110,14 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         'account' => ErrorCodes::NOT_FOUND
       )
     end
+
+    test 'without credentials' do
+      account = FactoryGirl.create(:account)
+
+      patch lock_account_path(account.id)
+
+      assert_response :unauthorized
+    end
   end
 
   testing '#unlock' do

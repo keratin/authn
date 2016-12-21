@@ -1,6 +1,5 @@
 class AccountsController < ApplicationController
   before_action :require_trusted_referrer, only: [:create]
-  before_action :require_api_credentials, only: [:lock, :unlock, :destroy]
 
   # params:
   # * username
@@ -34,6 +33,8 @@ class AccountsController < ApplicationController
   # params:
   # * id
   def lock
+    require_api_credentials
+
     if AccountLocker.new(params[:id]).perform
       head :ok
     else
@@ -46,6 +47,8 @@ class AccountsController < ApplicationController
   # params:
   # * id
   def unlock
+    require_api_credentials
+
     if AccountUnlocker.new(params[:id]).perform
       head :ok
     else
@@ -58,6 +61,8 @@ class AccountsController < ApplicationController
   # params:
   # * id
   def destroy
+    require_api_credentials
+
     if AccountArchiver.new(params[:id]).perform
       head :ok
     else
