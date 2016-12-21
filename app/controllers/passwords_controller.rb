@@ -1,9 +1,9 @@
 class PasswordsController < ApplicationController
-  before_action :require_trusted_referrer
-
   # params:
   # * username
   def edit
+    raise AccessForbidden unless referred?
+
     if account = Account.named(params[:username]).take
       # SECURITY NOTE:
       #
@@ -21,6 +21,8 @@ class PasswordsController < ApplicationController
   # * token
   # * password
   def update
+    raise AccessForbidden unless referred?
+
     updater = PasswordUpdater.new(params[:token], params[:password])
 
     if updater.perform

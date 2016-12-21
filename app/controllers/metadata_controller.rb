@@ -1,6 +1,4 @@
 class MetadataController < ApplicationController
-  before_action :require_api_credentials, only: [:stats]
-
   # a subset of the openid connect spec:
   # http://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata
   #
@@ -30,6 +28,8 @@ class MetadataController < ApplicationController
   end
 
   def stats
+    raise AccessUnauthorized unless authenticated?
+
     render status: :ok, json: {
       actives: ActivesReporter.new.perform,
     }
