@@ -33,7 +33,7 @@ class AccountsController < ApplicationController
   # params:
   # * id
   def lock
-    raise AccessUnauthorized unless authenticated?
+    raise AccessUnauthenticated unless authenticated?
 
     if AccountLocker.new(params[:id]).perform
       head :ok
@@ -47,7 +47,7 @@ class AccountsController < ApplicationController
   # params:
   # * id
   def unlock
-    raise AccessUnauthorized unless authenticated?
+    raise AccessUnauthenticated unless authenticated?
 
     if AccountUnlocker.new(params[:id]).perform
       head :ok
@@ -61,7 +61,7 @@ class AccountsController < ApplicationController
   # params:
   # * id
   def destroy
-    raise AccessUnauthorized unless authenticated?
+    raise AccessUnauthenticated unless authenticated?
 
     if AccountArchiver.new(params[:id]).perform
       head :ok

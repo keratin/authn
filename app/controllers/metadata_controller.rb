@@ -28,7 +28,7 @@ class MetadataController < ApplicationController
   end
 
   def stats
-    raise AccessUnauthorized unless authenticated?
+    raise AccessUnauthenticated unless authenticated?
 
     render status: :ok, json: {
       actives: ActivesReporter.new.perform,
