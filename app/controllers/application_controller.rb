@@ -1,6 +1,10 @@
 require 'json_envelope'
 
 class ApplicationController < ActionController::API
+  class UntrustedReferrer < StandardError; end
+  rescue_from UntrustedReferrer do |exception|
+    render status: :forbidden, json: JSONEnvelope.errors('referer' => 'is not a trusted host')
+  end
   # when HTTP_REFERER exists, it's a great way to prevent CSRF attacks.
   #
   # an experiment performed in http://seclab.stanford.edu/websec/csrf/csrf.pdf found the
@@ -11,7 +15,7 @@ class ApplicationController < ActionController::API
   # compatible javascript. stay stateless!
   private def require_trusted_referrer
     return if Rails.application.config.application_domains.include?(requesting_audience)
-    render status: :forbidden, json: JSONEnvelope.errors('referer' => 'is not a trusted host')
+    raise UntrustedReferrer
   end
 
   class UnauthorizedAccess < StandardError; end

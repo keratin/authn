@@ -1,10 +1,10 @@
 class SessionsController < ApplicationController
-  before_action :require_trusted_referrer, only: [:create, :refresh, :destroy]
-
   # params:
   # * username
   # * password
   def create
+    require_trusted_referrer
+
     account = Account.named(params[:username]).first
 
     # SECURITY NOTE
@@ -32,6 +32,8 @@ class SessionsController < ApplicationController
   end
 
   def refresh
+    require_trusted_referrer
+
     if session[:account_id] && RefreshToken.find(session[:token])
       RefreshToken.touch(token: session[:token], account_id: session[:account_id])
       render status: :created, json: JSONEnvelope.result(
@@ -45,6 +47,8 @@ class SessionsController < ApplicationController
   # params:
   # * redirect_uri (optional)
   def destroy
+    require_trusted_referrer
+
     RefreshToken.revoke(session[:token])
     reset_session
 

@@ -1,10 +1,10 @@
 class AccountsController < ApplicationController
-  before_action :require_trusted_referrer, only: [:create]
-
   # params:
   # * username
   # * password
   def create
+    require_trusted_referrer
+
     creator = AccountCreator.new(params[:username], params[:password])
 
     if account = creator.perform
