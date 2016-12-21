@@ -3,7 +3,7 @@ class AccountsController < ApplicationController
   # * username
   # * password
   def create
-    require_trusted_referrer
+    raise AccessForbidden unless referred?
 
     creator = AccountCreator.new(params[:username], params[:password])
 
@@ -33,7 +33,7 @@ class AccountsController < ApplicationController
   # params:
   # * id
   def lock
-    require_api_credentials
+    raise AccessUnauthorized unless authenticated?
 
     if AccountLocker.new(params[:id]).perform
       head :ok
@@ -47,7 +47,7 @@ class AccountsController < ApplicationController
   # params:
   # * id
   def unlock
-    require_api_credentials
+    raise AccessUnauthorized unless authenticated?
 
     if AccountUnlocker.new(params[:id]).perform
       head :ok
@@ -61,7 +61,7 @@ class AccountsController < ApplicationController
   # params:
   # * id
   def destroy
-    require_api_credentials
+    raise AccessUnauthorized unless authenticated?
 
     if AccountArchiver.new(params[:id]).perform
       head :ok

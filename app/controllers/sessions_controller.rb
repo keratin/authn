@@ -3,7 +3,7 @@ class SessionsController < ApplicationController
   # * username
   # * password
   def create
-    require_trusted_referrer
+    raise AccessForbidden unless referred?
 
     account = Account.named(params[:username]).first
 
@@ -32,7 +32,7 @@ class SessionsController < ApplicationController
   end
 
   def refresh
-    require_trusted_referrer
+    raise AccessForbidden unless referred?
 
     if session[:account_id] && RefreshToken.find(session[:token])
       RefreshToken.touch(token: session[:token], account_id: session[:account_id])
@@ -47,7 +47,7 @@ class SessionsController < ApplicationController
   # params:
   # * redirect_uri (optional)
   def destroy
-    require_trusted_referrer
+    raise AccessForbidden unless referred?
 
     RefreshToken.revoke(session[:token])
     reset_session
