@@ -50,7 +50,7 @@ class SessionsController < ApplicationController
     raise AccessForbidden unless referred?
 
     RefreshToken.revoke(authn_session[:sub])
-    cookies.delete(AUTHN_SESSION_NAME)
+    cookies.delete(AuthNSession::NAME)
 
     redirect_host = begin
       URI.parse(params[:redirect_uri]).host

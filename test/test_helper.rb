@@ -59,7 +59,7 @@ class ActiveSupport::TestCase
   private
 
   def authn_session
-    JSON::JWT.decode(cookies[ApplicationController::AUTHN_SESSION_NAME], Rails.application.config.session_key)
+    JSON::JWT.decode(cookies[AuthNSession::NAME], Rails.application.config.session_key)
   end
 
   def assert_json_jwt(str)
