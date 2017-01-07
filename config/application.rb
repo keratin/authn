@@ -29,6 +29,5 @@ module AuthServer
     config.api_only = true
 
     config.middleware.insert_before Rack::Head, ActionDispatch::Cookies
-    config.middleware.insert_before Rack::Head, ActionDispatch::Session::CookieStore
   end
 end
