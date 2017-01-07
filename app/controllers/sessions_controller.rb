@@ -23,7 +23,7 @@ class SessionsController < ApplicationController
       else
         establish_session(account.id, requesting_audience)
         render status: :created, json: JSONEnvelope.result(
-          id_token: issue_token_from(session)
+          id_token: issue_token_from(authn_session)
         )
       end
     else
@@ -34,10 +34,10 @@ class SessionsController < ApplicationController
   def refresh
     raise AccessForbidden unless referred?
 
-    if session[:account_id] && RefreshToken.find(session[:token])
-      RefreshToken.touch(token: session[:token], account_id: session[:account_id])
+    if authn_session[:sub] && RefreshToken.find(authn_session[:token])
+      RefreshToken.touch(token: authn_session[:token], account_id: session[:sub])
       render status: :created, json: JSONEnvelope.result(
-        id_token: issue_token_from(session)
+        id_token: issue_token_from(authn_session)
       )
     else
       render status: :unauthorized
@@ -49,8 +49,8 @@ class SessionsController < ApplicationController
   def destroy
     raise AccessForbidden unless referred?
 
-    RefreshToken.revoke(session[:token])
-    reset_session
+    RefreshToken.revoke(authn_session[:token])
+    cookies.delete(AUTHN_SESSION_NAME)
 
     redirect_host = begin
       URI.parse(params[:redirect_uri]).host

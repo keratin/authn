@@ -1,5 +1,8 @@
 class ApplicationController < ActionController::API
   include AccessControl
+  include ActionController::Cookies
+
+  AUTHN_SESSION_NAME = 'authn'
 
   # Unauthenticated access means credentials are required but absent. It should map to the HTTP 401
   # status code.
@@ -23,25 +26,39 @@ class ApplicationController < ActionController::API
 
   private def establish_session(account_id, audience)
     # avoid any potential session fixation. whatever session they had before can't be trusted.
-    RefreshToken.revoke(session[:token]) if session[:token]
-    reset_session
+    RefreshToken.revoke(authn_session[:token]) if authn_session[:token]
 
-    session[:account_id] = account_id
-    session[:audience] = audience
-    session[:token] = RefreshToken.create(account_id)
-    session[:created_at] = Time.now.to_i
+    # NOTE: this cookie is not set to expire, but the refresh token is.
+    cookies[AUTHN_SESSION_NAME] = {
+      value: JSON::JWT.new(
+        iss: Rails.application.config.authn_url,
+        sub: account_id,
+        aud: Rails.application.config.authn_url,
+        iat: Time.now.utc.to_i,
+        azp: audience,
+        token: RefreshToken.create(account_id)
+      ).sign(Rails.application.config.session_key, 'HS256').to_s,
+      secure: Rails.application.config.force_ssl,
+      httponly: true
+    }
   end
 
-  private def issue_token_from(session)
-    ActivesTracker.new(session[:account_id]).perform
+  private def authn_session
+    return {} unless cookies[AUTHN_SESSION_NAME].present?
+
+    @authn_session ||= JSON::JWT.decode(cookies[AUTHN_SESSION_NAME], Rails.application.config.session_key) || {}
+  end
+
+  private def issue_token_from(sess)
+    ActivesTracker.new(sess[:sub]).perform
 
     JSON::JWT.new(
-      iss: Rails.application.config.authn_url,
-      sub: session[:account_id],
-      aud: session[:audience],
+      iss: sess[:iss],
+      sub: sess[:sub],
+      aud: sess[:azp],
       exp: Time.now.utc.to_i + Rails.application.config.access_token_expiry,
       iat: Time.now.utc.to_i,
-      auth_time: session[:created_at].to_i
+      auth_time: sess[:iat]
     ).sign(Rails.application.config.auth_private_key, Rails.application.config.auth_signing_alg).to_s
   end
 

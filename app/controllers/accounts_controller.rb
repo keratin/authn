@@ -11,7 +11,7 @@ class AccountsController < ApplicationController
       establish_session(account.id, requesting_audience)
 
       render status: :created, json: JSONEnvelope.result(
-        id_token: issue_token_from(session)
+        id_token: issue_token_from(authn_session)
       )
     else
       render status: :unprocessable_entity, json: JSONEnvelope.errors(creator.errors)

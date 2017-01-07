@@ -39,10 +39,10 @@ class ActiveSupport::TestCase
 
   def with_session(account_id: nil, token: nil)
     account_id ||= rand(9999)
-    ApplicationController.stub_any_instance(:session, {
-      account_id: account_id,
-      token: token || RefreshToken.create(account_id)}
-    ) do
+    ApplicationController.stub_any_instance(:authn_session, {
+      sub: account_id,
+      token: token || RefreshToken.create(account_id)
+    }) do
       yield
     end
   end
@@ -58,6 +58,10 @@ class ActiveSupport::TestCase
   end
 
   private
+
+  def authn_session
+    JSON::JWT.decode(cookies[ApplicationController::AUTHN_SESSION_NAME], Rails.application.config.session_key)
+  end
 
   def assert_json_jwt(str)
     assert str.presence
