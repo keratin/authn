@@ -18,7 +18,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
       end
 
       authn_session.tap do |session|
-        assert_equal account_id, session[:sub]
+        assert_equal account_id, RefreshToken.find(session[:sub])
         assert_equal Rails.application.config.authn_url, session[:aud]
         assert_equal Rails.application.config.application_domains.first, session[:azp]
       end

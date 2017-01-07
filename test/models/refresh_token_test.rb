@@ -5,7 +5,7 @@ class RefreshTokenTest < ActiveSupport::TestCase
     account_id = rand(9999)
 
     hex = RefreshToken.create(account_id)
-    assert_equal account_id.to_s, RefreshToken.find(hex)
+    assert_equal account_id, RefreshToken.find(hex)
     assert_equal [hex], RefreshToken.sessions(account_id)
     RefreshToken.revoke(hex)
     refute RefreshToken.find(hex)

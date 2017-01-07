@@ -40,8 +40,7 @@ class ActiveSupport::TestCase
   def with_session(account_id: nil, token: nil)
     account_id ||= rand(9999)
     ApplicationController.stub_any_instance(:authn_session, {
-      sub: account_id,
-      token: token || RefreshToken.create(account_id)
+      sub: token || RefreshToken.create(account_id)
     }) do
       yield
     end

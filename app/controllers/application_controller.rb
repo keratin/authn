@@ -32,11 +32,10 @@ class ApplicationController < ActionController::API
     cookies[AUTHN_SESSION_NAME] = {
       value: JSON::JWT.new(
         iss: Rails.application.config.authn_url,
-        sub: account_id,
+        sub: RefreshToken.create(account_id),
         aud: Rails.application.config.authn_url,
         iat: Time.now.utc.to_i,
-        azp: audience,
-        token: RefreshToken.create(account_id)
+        azp: audience
       ).sign(Rails.application.config.session_key, 'HS256').to_s,
       secure: Rails.application.config.force_ssl,
       httponly: true
@@ -54,7 +53,7 @@ class ApplicationController < ActionController::API
 
     JSON::JWT.new(
       iss: sess[:iss],
-      sub: sess[:sub],
+      sub: RefreshToken.find(sess[:sub]),
       aud: sess[:azp],
       exp: Time.now.utc.to_i + Rails.application.config.access_token_expiry,
       iat: Time.now.utc.to_i,
