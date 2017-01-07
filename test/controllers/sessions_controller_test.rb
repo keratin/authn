@@ -16,8 +16,12 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       assert_json_jwt(JSON.parse(response.body)['result']['id_token']) do |claims|
         assert_equal account.id, claims['sub']
       end
-      assert_equal account.id, session[:account_id]
-      assert_equal Rails.application.config.application_domains.first, session[:audience]
+
+      authn_session.tap do |session|
+        assert_equal account.id, RefreshToken.find(session[:sub])
+        assert_equal Rails.application.config.authn_url, session[:aud]
+        assert_equal Rails.application.config.application_domains.first, session[:azp]
+      end
     end
 
     test 'with locked credentials' do

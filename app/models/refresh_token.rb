@@ -13,7 +13,7 @@ module RefreshToken
     bin = [hex].pack('H*')
 
     REDIS.with do |conn|
-      conn.get("s:t.#{bin}")
+      conn.get("s:t.#{bin}").try!(:to_i)
     end
   end
 
