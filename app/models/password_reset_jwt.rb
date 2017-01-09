@@ -1,4 +1,3 @@
-# TODO: switch to HMAC with another derived key
 class PasswordResetJWT
   def self.generate(account_id, password_changed_at)
     new(
