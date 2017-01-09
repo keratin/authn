@@ -114,8 +114,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
   end
 
   private def jwt(account, claim_overrides = {})
-    JSON::JWT.new(claims(account, claim_overrides))
-      .sign(Rails.application.config.auth_private_key, Rails.application.config.auth_signing_alg).to_s
+    PasswordResetJWT.new(claims(account, claim_overrides)).to_s
   end
 
   private def claims(account, overrides = {})

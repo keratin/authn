@@ -21,16 +21,12 @@ class PasswordUpdater
   end
 
   def account
-    @account ||= Account.active.find_by_id(token[:sub])
+    @account ||= Account.active.find_by_id(token.sub)
   end
 
-  # TODO: move into PasswordResetJWT instance
   private def token_is_valid_and_fresh
-    if token[:iss] != Rails.application.config.authn_url ||
-      token[:aud] != Rails.application.config.authn_url ||
-      token[:scope] != PasswordUpdater::SCOPE ||
-      token[:exp] <= Time.now.to_i ||
-      (account && token[:lock] != account.password_changed_at.to_i)
+    unless token.valid? &&
+      (account && token.lock == account.password_changed_at.to_i)
 
       errors.add(:token, ErrorCodes::INVALID_OR_EXPIRED)
     end
