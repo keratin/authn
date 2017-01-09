@@ -11,11 +11,7 @@ class PasswordUpdater
 
   def initialize(jwt, password)
     @password = password
-    @token = begin
-      JSON::JWT.decode(jwt, Rails.application.config.auth_public_key)
-    rescue JSON::JWT::InvalidFormat
-      {}
-    end
+    @token = PasswordResetJWT.decode(jwt)
   end
 
   def perform
@@ -28,6 +24,7 @@ class PasswordUpdater
     @account ||= Account.active.find_by_id(token[:sub])
   end
 
+  # TODO: move into PasswordResetJWT instance
   private def token_is_valid_and_fresh
     if token[:iss] != Rails.application.config.authn_url ||
       token[:aud] != Rails.application.config.authn_url ||
