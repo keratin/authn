@@ -24,15 +24,7 @@ class ApplicationController < ActionController::API
 
   private def issue_token_from(sess)
     ActivesTracker.new(sess[:sub]).perform
-
-    JSON::JWT.new(
-      iss: sess[:iss],
-      sub: RefreshToken.find(sess[:sub]),
-      aud: sess[:azp],
-      exp: Time.now.utc.to_i + Rails.application.config.access_token_expiry,
-      iat: Time.now.utc.to_i,
-      auth_time: sess[:iat]
-    ).sign(Rails.application.config.auth_private_key, Rails.application.config.auth_signing_alg).to_s
+    IdentityJWT.generate(sess)
   end
 
 end
