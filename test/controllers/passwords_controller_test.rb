@@ -113,7 +113,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
   end
 
   private def jwt(account, claim_overrides = {})
-    claims = {
+    PasswordResetJWT.new({
       iss: Rails.application.config.authn_url,
       sub: account.id,
       aud: Rails.application.config.authn_url,
@@ -121,7 +121,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
       iat: Time.now.utc.to_i,
       scope: PasswordUpdater::SCOPE,
       lock: account.password_changed_at.to_i
-    }.merge(claim_overrides)
-    JSON::JWT.new(claims).sign(Rails.application.config.auth_private_key, Rails.application.config.auth_signing_alg).to_s
+    }.merge(claim_overrides))
+      .to_s
   end
 end

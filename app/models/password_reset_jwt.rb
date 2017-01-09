@@ -13,7 +13,8 @@ class PasswordResetJWT
   end
 
   def self.decode(str)
-    new(JSON::JWT.decode(str, Rails.application.config.auth_public_key))
+    return new({}) if str.blank?
+    new(JSON::JWT.decode(str, Rails.application.config.password_reset_token_key))
   rescue JSON::JWT::InvalidFormat
     new({})
   end
@@ -39,9 +40,7 @@ class PasswordResetJWT
 
   def to_s
     JSON::JWT.new(@claims)
-      .sign(
-        Rails.application.config.auth_private_key,
-        Rails.application.config.auth_signing_alg
-      ).to_s
+      .sign(Rails.application.config.password_reset_token_key, 'HS256')
+      .to_s
   end
 end
