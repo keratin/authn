@@ -36,6 +36,7 @@ class Account < ApplicationRecord
     def self.included(base)
       base.validates :username, presence: { message: ErrorCodes::MISSING }
       base.validate  :username_format
+      base.validate  :username_domain
     end
 
     # worried about an imperfect regex? see: http://www.regular-expressions.info/email.html
@@ -52,6 +53,15 @@ class Account < ApplicationRecord
       if Rails.application.config.email_usernames
         errors.add(:username, ErrorCodes::FORMAT_INVALID) unless username =~ EMAIL
       elsif username.length < Account::USERNAME_MIN_LENGTH
+        errors.add(:username, ErrorCodes::FORMAT_INVALID)
+      end
+    end
+
+    private def username_domain
+      return if username.blank?
+      return unless Rails.application.config.email_usernames && Rails.application.config.email_username_domains
+
+      unless username.split('@').last.in?(Rails.application.config.email_username_domains)
         errors.add(:username, ErrorCodes::FORMAT_INVALID)
       end
     end

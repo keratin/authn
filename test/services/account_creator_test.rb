@@ -46,11 +46,28 @@ class AccountCreatorTest < ActiveSupport::TestCase
       assert_equal [ErrorCodes::FORMAT_INVALID], creator.errors[:username]
     end
 
+    test 'when emails are expected' do
+      with_config(:email_usernames, true) do
+        creator = AccountCreator.new('username@somewhere.com', SecureRandom.hex(8))
+        assert creator.perform
+      end
+    end
+
     test 'with plain name when emails are expected' do
       with_config(:email_usernames, true) do
         creator = AccountCreator.new('username', SecureRandom.hex(8))
         refute creator.perform
         assert_equal [ErrorCodes::FORMAT_INVALID], creator.errors[:username]
+      end
+    end
+
+    test 'with unknown domain when emails are expected and domains checked' do
+      with_config(:email_usernames, true) do
+        with_config(:email_username_domains, ['here.com']) do
+          creator = AccountCreator.new('username@there.com', SecureRandom.hex(8))
+          refute creator.perform
+          assert_equal [ErrorCodes::FORMAT_INVALID], creator.errors[:username]
+        end
       end
     end
   end
