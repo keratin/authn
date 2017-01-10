@@ -28,36 +28,9 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
       assert_equal [ErrorCodes::INVALID_OR_EXPIRED], updater.errors[:token]
     end
 
-    test 'with tampered token' do
+    test 'with invalid token' do
       account = FactoryGirl.create(:account)
       token = jwt(account, iss: 'https://elsewhere.tech')
-      updater = PasswordUpdater.new(token, SecureRandom.hex(8))
-
-      refute updater.perform
-      assert_equal [ErrorCodes::INVALID_OR_EXPIRED], updater.errors[:token]
-    end
-
-    test 'with valid token from malicious issuer' do
-      account = FactoryGirl.create(:account)
-      token = jwt(account, iss: 'https://evil.tech')
-      updater = PasswordUpdater.new(token, SecureRandom.hex(8))
-
-      refute updater.perform
-      assert_equal [ErrorCodes::INVALID_OR_EXPIRED], updater.errors[:token]
-    end
-
-    test 'with repurposed token' do
-      account = FactoryGirl.create(:account)
-      token = jwt(account, scope: 'OTHER')
-      updater = PasswordUpdater.new(token, SecureRandom.hex(8))
-
-      refute updater.perform
-      assert_equal [ErrorCodes::INVALID_OR_EXPIRED], updater.errors[:token]
-    end
-
-    test 'with expired token' do
-      account = FactoryGirl.create(:account)
-      token = jwt(account, exp: 1.hour.ago)
       updater = PasswordUpdater.new(token, SecureRandom.hex(8))
 
       refute updater.perform
@@ -114,12 +87,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
   end
 
   private def jwt(account, claim_overrides = {})
-    JSON::JWT.new(claims(account, claim_overrides))
-      .sign(Rails.application.config.auth_private_key, Rails.application.config.auth_signing_alg).to_s
-  end
-
-  private def claims(account, overrides = {})
-    {
+    PasswordResetJWT.new({
       iss: Rails.application.config.authn_url,
       sub: account.id,
       aud: Rails.application.config.authn_url,
@@ -127,6 +95,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
       iat: Time.now.utc.to_i,
       scope: PasswordUpdater::SCOPE,
       lock: account.password_changed_at.to_i
-    }.merge(overrides)
+    }.merge(claim_overrides))
+      .to_s
   end
 end

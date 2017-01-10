@@ -1,4 +1,4 @@
-class SessionJWT
+module SessionJWT
   def self.generate(account_id, azp)
     JSON::JWT.new(
       iss: Rails.application.config.authn_url,

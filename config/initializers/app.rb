@@ -66,6 +66,14 @@ Rails.application.config.session_key = OpenSSL::PKCS5.pbkdf2_hmac(
   OpenSSL::Digest::SHA256.new
 )
 
+Rails.application.config.password_reset_token_key = OpenSSL::PKCS5.pbkdf2_hmac(
+  require_env('SECRET_KEY_BASE'),
+  ENV.fetch('PASSWORD_RESET_TOKEN_KEY_SALT', 'password-reset-token-key-salt'),
+  20_000,
+  64,
+  OpenSSL::Digest::SHA256.new
+)
+
 Rails.application.config.application_domains = require_env('APP_DOMAINS').split(',')
 
 # will be used as issuer for id tokens, and must be a URL that the application can resolve in order
