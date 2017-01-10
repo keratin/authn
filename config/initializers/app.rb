@@ -130,3 +130,5 @@ BCrypt::Engine.cost = [10, ENV.fetch('BCRYPT_COST', 11).to_i].max
 
 #
 Rails.application.config.email_usernames = ENV.fetch('USERNAME_IS_EMAIL', false).to_s =~ /^t|true|yes$/i
+
+Rails.application.config.email_username_domains = ENV['EMAIL_USERNAME_DOMAINS'].try!{|val| val.split(',') }
