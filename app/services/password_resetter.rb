@@ -1,6 +1,5 @@
 # Like PasswordChanger, but decodes a reset token to find the account
 class PasswordResetter
-  SCOPE = 'reset'
   include ActiveModel::Validations
 
   attr_reader :token, :password
