@@ -23,7 +23,12 @@ class PasswordsController < ApplicationController
   def update
     raise AccessForbidden unless referred?
 
-    updater = PasswordResetter.new(params[:token], params[:password])
+    if params[:token]
+      updater = PasswordResetter.new(params[:token], params[:password])
+    else
+      account_id = RefreshToken.find(authn_session[:sub])
+      updater = PasswordChanger.new(account_id, params[:password])
+    end
 
     if updater.perform
       establish_session(updater.account.id, requesting_audience)

@@ -97,7 +97,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
       assert_json_errors('token' => ErrorCodes::INVALID_OR_EXPIRED)
     end
 
-    test 'with weak password' do
+    test 'with valid token and weak password' do
       account = FactoryGirl.create(:account)
 
       post password_path,
@@ -109,6 +109,56 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
 
       assert_response(:unprocessable_entity)
       assert_json_errors('password' => ErrorCodes::INSECURE)
+    end
+
+    test 'with session and password' do
+      account = FactoryGirl.create(:account)
+      password = SecureRandom.hex(8)
+
+      with_session(account_id: account.id) do
+        post password_path,
+          params: {
+            password: password
+          },
+          headers: TRUSTED_REFERRER
+
+        assert_response(:success)
+        assert account.reload.authenticate(password)
+      end
+    end
+
+    test 'with session and weak password' do
+      account = FactoryGirl.create(:account)
+
+      with_session(account_id: account.id) do
+        post password_path,
+          params: {
+            password: 'password'
+          },
+          headers: TRUSTED_REFERRER
+
+        assert_response(:unprocessable_entity)
+        assert_json_errors('password' => ErrorCodes::INSECURE)
+      end
+    end
+
+    test 'with session and token and password' do
+      session_account = FactoryGirl.create(:account)
+      token_account = FactoryGirl.create(:account)
+      password = SecureRandom.hex(8)
+
+      with_session(account_id: session_account.id) do
+        post password_path,
+          params: {
+            token: jwt(token_account),
+            password: password
+          },
+          headers: TRUSTED_REFERRER
+
+        assert_response(:success)
+        assert token_account.reload.authenticate(password)
+        refute session_account.reload.authenticate(password)
+      end
     end
   end
 
