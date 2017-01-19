@@ -119,7 +119,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
       aud: Rails.application.config.authn_url,
       exp: Time.now.utc.to_i + Rails.application.config.password_reset_expiry,
       iat: Time.now.utc.to_i,
-      scope: PasswordUpdater::SCOPE,
+      scope: PasswordResetter::SCOPE,
       lock: account.password_changed_at.to_i
     }.merge(claim_overrides))
       .to_s

@@ -51,7 +51,7 @@ class PasswordResetJWTTest < ActiveSupport::TestCase
       aud: Rails.application.config.authn_url,
       exp: Time.now.utc.to_i + Rails.application.config.password_reset_expiry,
       iat: Time.now.utc.to_i,
-      scope: PasswordUpdater::SCOPE,
+      scope: PasswordResetter::SCOPE,
       lock: Time.now.utc.to_i
     }.merge(claim_overrides))
   end

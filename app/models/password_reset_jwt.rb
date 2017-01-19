@@ -6,7 +6,7 @@ class PasswordResetJWT
       aud: Rails.application.config.authn_url,
       exp: Time.now.utc.to_i + Rails.application.config.password_reset_expiry,
       iat: Time.now.utc.to_i,
-      scope: PasswordUpdater::SCOPE,
+      scope: PasswordResetter::SCOPE,
       lock: password_changed_at.to_i
     ).to_s
   end
@@ -33,7 +33,7 @@ class PasswordResetJWT
   def valid?
     @claims[:iss] == Rails.application.config.authn_url &&
       @claims[:aud] == Rails.application.config.authn_url &&
-      @claims[:scope] == PasswordUpdater::SCOPE &&
+      @claims[:scope] == PasswordResetter::SCOPE &&
       @claims[:exp] > Time.now.to_i
   end
 
