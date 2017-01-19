@@ -26,6 +26,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
 
       refute updater.perform
       assert_equal [ErrorCodes::INVALID_OR_EXPIRED], updater.errors[:token]
+      assert_equal [], updater.errors[:account]
     end
 
     test 'with invalid token' do
