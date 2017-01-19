@@ -8,7 +8,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
 
       account = FactoryGirl.create(:account)
 
-      get edit_password_path,
+      get password_reset_path,
         params: {
           username: account.username
         },
@@ -22,7 +22,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
     end
 
     test 'with unknown username' do
-      get edit_password_path,
+      get password_reset_path,
         params: {
           username: 'unknown'
         },
@@ -34,7 +34,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
     test 'with locked account' do
       account = FactoryGirl.create(:account, :locked)
 
-      get edit_password_path,
+      get password_reset_path,
         params: {
           username: account.username
         },
@@ -49,7 +49,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
       account = FactoryGirl.create(:account)
       password = SecureRandom.hex(8)
 
-      patch password_path,
+      post password_path,
         params: {
           token: jwt(account),
           password: password
@@ -72,7 +72,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
     test 'with invalid token' do
       account = FactoryGirl.create(:account)
 
-      patch password_path,
+      post password_path,
         params: {
           token: jwt(account, scope: 'OTHER'),
           password: SecureRandom.hex(8)
@@ -86,7 +86,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
     test 'with expired token' do
       account = FactoryGirl.create(:account)
 
-      patch password_path,
+      post password_path,
         params: {
           token: jwt(account, exp: 1.hour.ago),
           password: SecureRandom.hex(8)
@@ -100,7 +100,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
     test 'with weak password' do
       account = FactoryGirl.create(:account)
 
-      patch password_path,
+      post password_path,
         params: {
           token: jwt(account),
           password: 'password'
