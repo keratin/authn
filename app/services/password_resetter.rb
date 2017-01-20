@@ -1,13 +1,13 @@
-class PasswordUpdater
-  SCOPE = 'reset'
+# Like PasswordChanger, but decodes a reset token to find the account
+class PasswordResetter
   include ActiveModel::Validations
-  include Account::PasswordValidations
 
   attr_reader :token, :password
 
-  validate  :token_is_valid_and_fresh
+  include Account::PasswordValidations
   validates :account, presence: { message: ErrorCodes::NOT_FOUND }, if: ->{ token.valid? }
   validate  :account_not_locked
+  validate  :token_is_valid_and_fresh
 
   def initialize(jwt, password)
     @password = password
@@ -24,17 +24,17 @@ class PasswordUpdater
     @account ||= Account.active.find_by_id(token.sub)
   end
 
+  private def account_not_locked
+    if account && account.locked?
+      errors.add(:account, ErrorCodes::LOCKED)
+    end
+  end
+
   private def token_is_valid_and_fresh
     unless token.valid? &&
       (!account || token.lock == account.password_changed_at.to_i)
 
       errors.add(:token, ErrorCodes::INVALID_OR_EXPIRED)
-    end
-  end
-
-  private def account_not_locked
-    if account && account.locked?
-      errors.add(:account, ErrorCodes::LOCKED)
     end
   end
 end

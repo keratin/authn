@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class PasswordUpdaterTest < ActiveSupport::TestCase
+class PasswordResetterTest < ActiveSupport::TestCase
   def setup
     Timecop.freeze
     super
@@ -15,14 +15,14 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
     test 'with valid token and password' do
       account = FactoryGirl.create(:account)
       token = jwt(account)
-      updater = PasswordUpdater.new(token, SecureRandom.hex(8))
+      updater = PasswordResetter.new(token, SecureRandom.hex(8))
 
       assert updater.perform
       assert account.reload.authenticate(updater.password)
     end
 
     test 'with missing token' do
-      updater = PasswordUpdater.new('', SecureRandom.hex(8))
+      updater = PasswordResetter.new('', SecureRandom.hex(8))
 
       refute updater.perform
       assert_equal [ErrorCodes::INVALID_OR_EXPIRED], updater.errors[:token]
@@ -32,7 +32,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
     test 'with invalid token' do
       account = FactoryGirl.create(:account)
       token = jwt(account, iss: 'https://elsewhere.tech')
-      updater = PasswordUpdater.new(token, SecureRandom.hex(8))
+      updater = PasswordResetter.new(token, SecureRandom.hex(8))
 
       refute updater.perform
       assert_equal [ErrorCodes::INVALID_OR_EXPIRED], updater.errors[:token]
@@ -41,7 +41,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
     test 'when password has been changed since issuing token' do
       account = FactoryGirl.create(:account)
       token = jwt(account)
-      updater = PasswordUpdater.new(token, SecureRandom.hex(8))
+      updater = PasswordResetter.new(token, SecureRandom.hex(8))
 
       Timecop.travel(1)
       assert updater.perform
@@ -53,7 +53,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
     test 'with a missing password' do
       account = FactoryGirl.create(:account)
       token = jwt(account)
-      updater = PasswordUpdater.new(token, '')
+      updater = PasswordResetter.new(token, '')
 
       refute updater.perform
       assert_equal [ErrorCodes::MISSING], updater.errors[:password]
@@ -62,7 +62,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
     test 'with a weak password' do
       account = FactoryGirl.create(:account)
       token = jwt(account)
-      updater = PasswordUpdater.new(token, 'password')
+      updater = PasswordResetter.new(token, 'password')
 
       refute updater.perform
       assert_equal [ErrorCodes::INSECURE], updater.errors[:password]
@@ -71,7 +71,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
     test 'with archived account' do
       account = FactoryGirl.create(:account, :archived)
       token = jwt(account)
-      updater = PasswordUpdater.new(token, SecureRandom.hex(8))
+      updater = PasswordResetter.new(token, SecureRandom.hex(8))
 
       refute updater.perform
       assert_equal [ErrorCodes::NOT_FOUND], updater.errors[:account]
@@ -80,7 +80,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
     test 'with locked account' do
       account = FactoryGirl.create(:account, :locked)
       token = jwt(account)
-      updater = PasswordUpdater.new(token, SecureRandom.hex(8))
+      updater = PasswordResetter.new(token, SecureRandom.hex(8))
 
       refute updater.perform
       assert_equal [ErrorCodes::LOCKED], updater.errors[:account]
@@ -94,7 +94,7 @@ class PasswordUpdaterTest < ActiveSupport::TestCase
       aud: Rails.application.config.authn_url,
       exp: Time.now.utc.to_i + Rails.application.config.password_reset_expiry,
       iat: Time.now.utc.to_i,
-      scope: PasswordUpdater::SCOPE,
+      scope: PasswordResetJWT::SCOPE,
       lock: account.password_changed_at.to_i
     }.merge(claim_overrides))
       .to_s
