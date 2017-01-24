@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
     # from the signup process, which necessarily indicates whether a name is taken or not.
     placeholder = Account::EMPTY_PASSWORDS[BCrypt::Engine.cost]
 
-    if BCrypt::Password.new(account.try(&:password) || placeholder).is_password?(params[:password])
+    if BCrypt::Password.new(account.try(&:password) || placeholder).is_password?(params[:password]) && params[:password].present?
       if account.locked?
         render status: :unprocessable_entity, json: JSONEnvelope.errors('account' => ErrorCodes::LOCKED)
       else

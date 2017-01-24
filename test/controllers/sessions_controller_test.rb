@@ -24,6 +24,18 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       end
     end
 
+    test 'with empty credentials' do
+      post sessions_path,
+        params: {
+          username: '',
+          password: ''
+        },
+        headers: TRUSTED_REFERRER
+
+      assert_response(:unprocessable_entity)
+      assert_json_errors('credentials' => ErrorCodes::FAILED)
+    end
+
     test 'with locked credentials' do
       account = FactoryGirl.create(:account, :locked, clear_password: 'valid')
 
