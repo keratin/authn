@@ -10,15 +10,11 @@ end
 
 # currently only supports RSA 256
 if Rails.env.test?
-  keypair = OpenSSL::PKey::RSA.new(512)
-  private_key = keypair.to_s
-  public_key = keypair.public_key.to_s
+  rsa = OpenSSL::PKey::RSA.new(512)
 else
-  private_key = require_env('RSA_PRIVATE_KEY').gsub('\n', "\n")
-  public_key = require_env('RSA_PUBLIC_KEY').gsub('\n', "\n")
+  rsa = OpenSSL::PKey::RSA.new(require_env('RSA_PRIVATE_KEY').gsub('\n', "\n"))
 end
-Rails.application.config.auth_private_key = OpenSSL::PKey::RSA.new(private_key)
-Rails.application.config.auth_public_key = OpenSSL::PKey::RSA.new(public_key)
+Rails.application.config.auth_private_key = rsa
 Rails.application.config.auth_signing_alg = 'RS256'
 
 # This setting controls how long the access tokens will live. Applications can and should implement

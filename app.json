@@ -19,9 +19,6 @@
     "RSA_PRIVATE_KEY": {
       "description": "Run `ssh-keygen -N '' -f keratin-authn-rsa`, then paste the entire output of `cat keratin-authn-rsa` here."
     },
-    "RSA_PUBLIC_KEY": {
-      "description": "After running the ssh-keygen command above, paste the entire output of `ssh-keygen -e -m pem -f keratin-authn-rsa` here"
-    },
     "SECRET_KEY_BASE": {
       "description": "Key used to securely sign AuthN session cookies",
       "generator": "secret"
