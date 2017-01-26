@@ -51,23 +51,21 @@ Rails.application.config.access_token_expiry = ENV.fetch('ACCESS_TOKEN_TTL', 1.h
 # log out.
 Rails.application.config.refresh_token_expiry = ENV.fetch('REFRESH_TOKEN_TTL', 1.year.to_i)
 
-# Users maintain sessions with AuthN as well. This session is secured by a lengthy secret+salt that
-# is derived from 10k iterations of PBKDF2 HMAC SHA-256. This means that any attempt to brute-force
-# the secret will have a high work factor in addition to a large search space.
-Rails.application.config.session_key = OpenSSL::PKCS5.pbkdf2_hmac(
+# Derives a key from `base` using `salt`. This derivation uses 10k iterations of PBKDF2 HMAC SHA-256
+# and means that any attempt to brute-force the secret from a signature will have a high work factor
+# in addition to a large search space.
+def derive_key(base, salt)
+  OpenSSL::PKCS5.pbkdf2_hmac(base, salt, 20_000, 64, OpenSSL::Digest::SHA256.new)
+end
+
+Rails.application.config.session_key = derive_key(
   require_env('SECRET_KEY_BASE'),
-  ENV.fetch('SESSION_KEY_SALT', 'session-key-salt'),
-  20_000,
-  64,
-  OpenSSL::Digest::SHA256.new
+  ENV.fetch('SESSION_KEY_SALT', 'session-key-salt')
 )
 
-Rails.application.config.password_reset_token_key = OpenSSL::PKCS5.pbkdf2_hmac(
+Rails.application.config.password_reset_token_key = derive_key(
   require_env('SECRET_KEY_BASE'),
-  ENV.fetch('PASSWORD_RESET_TOKEN_KEY_SALT', 'password-reset-token-key-salt'),
-  20_000,
-  64,
-  OpenSSL::Digest::SHA256.new
+  ENV.fetch('PASSWORD_RESET_TOKEN_KEY_SALT', 'password-reset-token-key-salt')
 )
 
 Rails.application.config.application_domains = require_env('APP_DOMAINS').split(',')
