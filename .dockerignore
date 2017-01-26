@@ -4,3 +4,5 @@ db/*.sqlite3-journal
 log/*
 tmp/*
 Dockerfile
+.env
+.byebug_history

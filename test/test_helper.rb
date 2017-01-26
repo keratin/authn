@@ -64,7 +64,7 @@ class ActiveSupport::TestCase
 
   def assert_json_jwt(str)
     assert str.presence
-    claims = JSON::JWT.decode(str, Rails.application.config.auth_public_key)
+    claims = JSON::JWT.decode(str, Rails.application.config.auth_private_key.public_key)
     yield claims
   end
 

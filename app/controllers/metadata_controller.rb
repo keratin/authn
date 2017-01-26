@@ -19,7 +19,7 @@ class MetadataController < ApplicationController
   def keys
     render status: :ok, json: {
       keys: [
-        Rails.application.config.auth_public_key.to_jwk.slice(:kty, :kid, :e, :n).merge(
+        Rails.application.config.auth_private_key.public_key.to_jwk.slice(:kty, :kid, :e, :n).merge(
           use: 'sig',
           alg: Rails.application.config.auth_signing_alg
         )

@@ -20,7 +20,6 @@ services:
       - HTTP_AUTH_USERNAME
       - REDIS_URL=redis://redis/0
       - RSA_PRIVATE_KEY
-      - RSA_PUBLIC_KEY
       - SECRET_KEY_BASE
 
   test-base:
