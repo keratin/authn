@@ -11,6 +11,8 @@ class MetadataControllerTest < ActionDispatch::IntegrationTest
   end
 
   test '#keys' do
+    Rails.application.config.key_provider.key
+
     get app_keys_path
 
     assert_response(:success)
