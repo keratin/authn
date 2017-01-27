@@ -7,6 +7,6 @@ module IdentityJWT
       exp: Time.now.utc.to_i + Rails.application.config.access_token_expiry,
       iat: Time.now.utc.to_i,
       auth_time: session[:iat]
-    ).sign(Rails.application.config.auth_private_key, Rails.application.config.auth_signing_alg).to_s
+    ).sign(Rails.application.config.key_provider.key, Rails.application.config.auth_signing_alg).to_s
   end
 end

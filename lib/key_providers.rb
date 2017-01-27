@@ -9,6 +9,10 @@ module KeyProviders
     def initialize(private_key)
       @key = private_key
     end
+
+    def public_key
+      key.public_key
+    end
   end
 
   # This provider uses Redis to persist an auto-generated key and rotate it regularly. The key is
@@ -55,6 +59,10 @@ module KeyProviders
       end
 
       @keys[bucket]
+    end
+
+    def public_key
+      key.public_key
     end
 
     private def fetch(key)

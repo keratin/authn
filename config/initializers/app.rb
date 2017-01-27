@@ -1,3 +1,5 @@
+require 'key_providers'
+
 class MissingConfiguration < StandardError
   def initialize(name)
     super "Missing environment variable: #{name}. See https://github.com/keratin/authn/wiki/Server-Configuration for details."
@@ -14,7 +16,7 @@ if Rails.env.test?
 else
   rsa = OpenSSL::PKey::RSA.new(require_env('RSA_PRIVATE_KEY').gsub('\n', "\n"))
 end
-Rails.application.config.auth_private_key = rsa
+Rails.application.config.key_provider = KeyProviders::Static.new(rsa)
 Rails.application.config.auth_signing_alg = 'RS256'
 
 # This setting controls how long the access tokens will live. Applications can and should implement
