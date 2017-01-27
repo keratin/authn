@@ -44,7 +44,7 @@ Rails.application.config.access_token_expiry = ENV.fetch('ACCESS_TOKEN_TTL', 1.h
 # log out.
 Rails.application.config.refresh_token_expiry = ENV.fetch('REFRESH_TOKEN_TTL', 1.year.to_i)
 
-# Derives a key from `base` using `salt`. This derivation uses 10k iterations of PBKDF2 HMAC SHA-256
+# Derives a key from `base` using `salt`. This derivation uses 20k iterations of PBKDF2 HMAC SHA-256
 # and means that any attempt to brute-force the secret from a signature will have a high work factor
 # in addition to a large search space.
 def derive_key(base, salt)
