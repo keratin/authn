@@ -68,6 +68,11 @@ Rails.application.config.password_reset_token_key = derive_key(
   ENV.fetch('PASSWORD_RESET_TOKEN_KEY_SALT', 'password-reset-token-key-salt')
 )
 
+Rails.application.config.db_encryption_key = derive_key(
+  require_env('SECRET_KEY_BASE'),
+  ENV.fetch('DB_ENCRYPTION_KEY_SALT', 'db-encryption-key-salt')
+)
+
 Rails.application.config.application_domains = require_env('APP_DOMAINS').split(',')
 
 # will be used as issuer for id tokens, and must be a URL that the application can resolve in order
