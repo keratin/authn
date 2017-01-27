@@ -38,8 +38,6 @@ module KeyProviders
     # 2048-bit key, plus send it back over the wire to redis.
     attr_reader :race_ms
 
-    attr_reader :keys
-
     def initialize(
       interval: Rails.application.config.access_token_expiry,
       encryption_key: Rails.application.config.db_encryption_key,
@@ -75,6 +73,10 @@ module KeyProviders
       end
 
       @keys[bucket]
+    end
+
+    def keys
+      @keys.values
     end
 
     def public_key

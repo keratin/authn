@@ -40,7 +40,7 @@ class KeyProvidersTest < ActiveSupport::TestCase
 
       Timecop.travel(@interval)
       key3 = provider.key
-      assert_equal [key2, key3], provider.keys.values, "keep one old key"
+      assert_equal [key2, key3], provider.keys, "keep one old key"
     end
 
     test 'existing key' do

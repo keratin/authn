@@ -10,15 +10,6 @@ def require_env(name)
   ENV[name] || raise(MissingConfiguration.new(name))
 end
 
-# currently only supports RSA 256
-if Rails.env.test?
-  rsa = OpenSSL::PKey::RSA.new(512)
-else
-  rsa = OpenSSL::PKey::RSA.new(require_env('RSA_PRIVATE_KEY').gsub('\n', "\n"))
-end
-Rails.application.config.key_provider = KeyProviders::Static.new(rsa)
-Rails.application.config.auth_signing_alg = 'RS256'
-
 # This setting controls how long the access tokens will live. Applications can and should implement
 # a periodic token exchange process to keep the effective session alive much longer than the expiry
 # listed here.
@@ -133,3 +124,15 @@ BCrypt::Engine.cost = [10, ENV.fetch('BCRYPT_COST', 11).to_i].max
 Rails.application.config.email_usernames = ENV.fetch('USERNAME_IS_EMAIL', false).to_s =~ /^t|true|yes$/i
 
 Rails.application.config.email_username_domains = ENV['EMAIL_USERNAME_DOMAINS'].try!{|val| val.split(',') }
+
+# NOTE: this depends on previous configuration.
+Rails.application.config.key_provider = if Rails.env.test?
+  KeyProviders::Rotating.new(strength: 512)
+elsif ENV['RSA_PRIVATE_KEY']
+  KeyProviders::Static.new(
+    OpenSSL::PKey::RSA.new(ENV['RSA_PRIVATE_KEY'].gsub('\n', "\n"))
+  )
+else
+  KeyProviders::Rotating.new
+end
+Rails.application.config.auth_signing_alg = 'RS256'
