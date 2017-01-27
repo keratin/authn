@@ -52,19 +52,26 @@ module KeyProviders
       @strength = strength
       @encryptor = Encryptor.new(encryption_key)
       @keys = {}
+      @mutex = Mutex.new
     end
 
     def key
       bucket = Time.now.to_i / interval
 
       if !@keys[bucket]
-        # find or create new key
-        @keys[bucket] = fetch("rsa:#{bucket}") do
-          OpenSSL::PKey::RSA.new(@strength)
-        end
+        @mutex.synchronize do
+          # another thread may have already accomplished this
+          next if @keys[bucket]
 
-        # trim old keys (keep 2)
-        @keys.keys.sort[0...-2].each{|b| @keys.delete(b) }
+          # find or create new key
+          key = fetch("rsa:#{bucket}") do
+            OpenSSL::PKey::RSA.new(@strength)
+          end
+
+          # trim out old keys (keep 2)
+          # this works because ruby hashes are ordered.
+          @keys = @keys.to_a.last(1).to_h.merge(bucket => key)
+        end
       end
 
       @keys[bucket]

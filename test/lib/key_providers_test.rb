@@ -63,6 +63,19 @@ class KeyProvidersTest < ActiveSupport::TestCase
         provider.key
       end
     end
+
+    test 'thread races' do
+      provider = KeyProviders::Rotating.new(interval: @interval, strength: 512)
+      keys = []
+      2.times.map do
+        Thread.new{
+          keys << provider.key
+        }
+      end.each(&:join)
+
+      assert_equal 1, keys.uniq.count
+      assert_equal 1, provider.keys.count
+    end
   end
 
 end
