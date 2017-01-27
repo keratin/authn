@@ -22,14 +22,14 @@ class KeyProvidersTest < ActiveSupport::TestCase
 
   testing 'Rotating' do
     test 'missing key' do
-      provider = KeyProviders::Rotating.new(interval: @interval)
+      provider = KeyProviders::Rotating.new(interval: @interval, strength: 512)
       key = provider.key
       assert key
       assert key.is_a?(OpenSSL::PKey::RSA)
     end
 
     test 'rotation' do
-      provider = KeyProviders::Rotating.new(interval: @interval)
+      provider = KeyProviders::Rotating.new(interval: @interval, strength: 512)
 
       key1 = provider.key
       assert_equal key1, provider.key, "can fetch the same key again"
@@ -44,10 +44,10 @@ class KeyProvidersTest < ActiveSupport::TestCase
     end
 
     test 'existing key' do
-      other_provider = KeyProviders::Rotating.new(interval: @interval)
+      other_provider = KeyProviders::Rotating.new(interval: @interval, strength: 512)
       key = other_provider.key
 
-      provider = KeyProviders::Rotating.new(interval: @interval)
+      provider = KeyProviders::Rotating.new(interval: @interval, strength: 512)
       assert_equal key.to_s, provider.key.to_s
     end
 
@@ -58,7 +58,7 @@ class KeyProvidersTest < ActiveSupport::TestCase
         conn.set("rsa:#{Time.now.to_i / @interval}", encryptor.encrypt(weak_key.to_s))
       end
 
-      provider = KeyProviders::Rotating.new(interval: @interval)
+      provider = KeyProviders::Rotating.new(interval: @interval, strength: 512)
       assert_raises Encryptor::InvalidMessage do
         provider.key
       end

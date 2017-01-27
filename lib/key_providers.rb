@@ -42,11 +42,14 @@ module KeyProviders
 
     def initialize(
       interval: Rails.application.config.access_token_expiry,
+      encryption_key: Rails.application.config.db_encryption_key,
       race_ms: 500,
-      encryption_key: Rails.application.config.db_encryption_key
+      strength: 2048
       )
+
       @interval = interval
       @race_ms = race_ms
+      @strength = strength
       @encryptor = Encryptor.new(encryption_key)
       @keys = {}
     end
@@ -57,7 +60,7 @@ module KeyProviders
       if !@keys[bucket]
         # find or create new key
         @keys[bucket] = fetch("rsa:#{bucket}") do
-          OpenSSL::PKey::RSA.new(2048)
+          OpenSSL::PKey::RSA.new(@strength)
         end
 
         # trim old keys (keep 2)
