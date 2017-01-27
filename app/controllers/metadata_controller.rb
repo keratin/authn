@@ -18,12 +18,12 @@ class MetadataController < ApplicationController
   # see: JWK
   def keys
     render status: :ok, json: {
-      keys: [
-        Rails.application.config.key_provider.public_key.to_jwk.slice(:kty, :kid, :e, :n).merge(
+      keys: Rails.application.config.key_provider.keys.map do |key|
+        key.public_key.to_jwk.slice(:kty, :kid, :e, :n).merge(
           use: 'sig',
           alg: Rails.application.config.auth_signing_alg
         )
-      ]
+      end
     }
   end
 

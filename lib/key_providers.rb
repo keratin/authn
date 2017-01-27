@@ -13,6 +13,10 @@ module KeyProviders
     def public_key
       key.public_key
     end
+
+    def keys
+      [@key]
+    end
   end
 
   # This provider uses Redis to persist an auto-generated key and rotate it regularly. The key is
@@ -33,6 +37,8 @@ module KeyProviders
     # this should be greater than the peak time necessary to generate and encrypt a
     # 2048-bit key, plus send it back over the wire to redis.
     attr_reader :race_ms
+
+    attr_reader :keys
 
     def initialize(
       interval: Rails.application.config.access_token_expiry,

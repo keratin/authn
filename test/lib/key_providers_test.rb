@@ -30,10 +30,17 @@ class KeyProvidersTest < ActiveSupport::TestCase
 
     test 'rotation' do
       provider = KeyProviders::Rotating.new(interval: @interval)
+
       key1 = provider.key
-      assert_equal key1.to_s, provider.key.to_s
+      assert_equal key1, provider.key, "can fetch the same key again"
+
       Timecop.travel(@interval)
-      refute_equal key1.to_s, provider.key.to_s
+      key2 = provider.key
+      refute_equal key1, key2, "key rotates"
+
+      Timecop.travel(@interval)
+      key3 = provider.key
+      assert_equal [key2, key3], provider.keys.values, "keep one old key"
     end
 
     test 'existing key' do
