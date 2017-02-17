@@ -16,8 +16,15 @@
     "HTTP_AUTH_PASSWORD": {
       "description": "The HTTP Basic Auth password your application will send for secured back-channel communications."
     },
-    "RSA_PRIVATE_KEY": {
-      "description": "Run `ssh-keygen -N '' -f keratin-authn-rsa`, then paste the entire output of `cat keratin-authn-rsa` here."
+    "USERNAME_IS_EMAIL": {
+      "description": "Whether usernames must validate as emails (true) or not (false).",
+      "required": false,
+      "value": "false"
+    },
+    "PASSWORD_POLICY_SCORE": {
+      "description": "How complex a password must be to validate, on a scale of 0 (insecure) to 5 (very unguessable).",
+      "required": false,
+      "value": "2"
     },
     "SECRET_KEY_BASE": {
       "description": "Key used to securely sign AuthN session cookies",
