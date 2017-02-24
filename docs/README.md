@@ -1,9 +1,9 @@
-Documentation:
+## Documentation:
 
 * [Server API](api.md)
 * [Server Configuration](config.md)
 
-Guides:
+## Guides:
 
 * [Displaying a Password Strength Meter](guide-displaying_a_password_strength_meter.md)
 * [Integrating AuthN with an API Gateway](guide-integrating_authn_with_an_api_gateway.md)
