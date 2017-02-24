@@ -1,3 +1,10 @@
+---
+title: Restrict Signups by Invitation
+tags:
+  - guides
+---
+
+
 # Guide: Restrict Signups by Invitation
 
 If you wish to only permit signups for users with an invitation, you should take the following steps:

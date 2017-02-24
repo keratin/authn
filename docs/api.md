@@ -1,3 +1,9 @@
+---
+title: Server API
+---
+
+# Server API
+
 * [Visibility](#visibility)
 * [JSON Envelope](#json-envelope)
 * Endpoints
@@ -19,7 +25,7 @@
     * [JSON Web Keys](#json-web-keys)
     * [Service Stats](#service-stats)
 
-# Visibility
+## Visibility
 
 AuthN exposes both **public** and **private** endpoints.
 
@@ -29,7 +35,7 @@ AuthN exposes both **public** and **private** endpoints.
 
 **Private** endpoints are intended to receive only traffic from your application's backend. They require HTTP Basic Auth username and password, and should only be accessed over HTTPS (which you should be using anyway).
 
-# JSON Envelope
+## JSON Envelope
 
 Successful actions will be indicated with a HTTP 2xx code, and usually accompanied by a JSON response containing a `result` key.
 
@@ -56,9 +62,9 @@ Example:
 }
 ```
 
-# Endpoints
+## Endpoints
 
-## Signup
+### Signup
 
 Visibility: Public
 
@@ -69,7 +75,7 @@ Visibility: Public
 | `username` | string | Must be present and unique. |
 | `password` | string | Must meet minimum complexity scoring per [zxcvbn](https://blogs.dropbox.com/tech/2012/04/zxcvbn-realistic-password-strength-estimation/). |
 
-### Success:
+#### Success:
 
     201 Created
 
@@ -79,7 +85,7 @@ Visibility: Public
       }
     }
 
-### Failure
+#### Failure
 
     422 Unprocessable Entity
 
@@ -96,7 +102,7 @@ Visibility: Public
 The reason for `FORMAT_INVALID` will depend on whether you've configured AuthN to validate usernames
 as email addresses.
 
-## Username Availability
+### Username Availability
 
 Visibility: Public
 
@@ -106,7 +112,7 @@ Visibility: Public
 | ------ | ---- | ----- |
 | `username` | string | &nbsp; |
 
-### Success:
+#### Success:
 
     200 Ok
 
@@ -114,7 +120,7 @@ Visibility: Public
       "result": true
     }
 
-### Failure
+#### Failure
 
     422 Unprocessable Entity
 
@@ -124,7 +130,7 @@ Visibility: Public
       ]
     }
 
-## Lock Account
+### Lock Account
 
 Visibility: Private
 
@@ -134,11 +140,11 @@ Visibility: Private
 | ------ | ---- | ----- |
 | `id` | integer | available from the JWT `sub` claim |
 
-### Success:
+#### Success:
 
     200 Ok
 
-### Failure:
+#### Failure:
 
     404 Not Found
 
@@ -148,7 +154,7 @@ Visibility: Private
       ]
     }
 
-## Unlock Account
+### Unlock Account
 
 Visibility: Private
 
@@ -158,11 +164,11 @@ Visibility: Private
 | ------ | ---- | ----- |
 | `id` | integer | available from the JWT `sub` claim |
 
-### Success:
+#### Success:
 
     200 Ok
 
-### Failure:
+#### Failure:
 
     404 Not Found
 
@@ -172,7 +178,7 @@ Visibility: Private
       ]
     }
 
-## Archive Account
+### Archive Account
 
 Visibility: Private
 
@@ -182,11 +188,11 @@ Visibility: Private
 | ------ | ---- | ----- |
 | `id` | integer | available from the JWT `sub` claim |
 
-### Success:
+#### Success:
 
     200 Ok
 
-### Failure:
+#### Failure:
 
     404 Not Found
 
@@ -196,7 +202,7 @@ Visibility: Private
       ]
     }
 
-## Login
+### Login
 
 Visibility: Public
 
@@ -207,7 +213,7 @@ Visibility: Public
 | `username` | string | &nbsp; |
 | `password` | string | &nbsp; |
 
-### Success:
+#### Success:
 
     201 Created
 
@@ -217,7 +223,7 @@ Visibility: Public
       }
     }
 
-### Failure:
+#### Failure:
 
     422 Unprocessable Entity
 
@@ -230,7 +236,7 @@ Visibility: Public
 
 Note that no information is given to tell the user whether the username was found or the password was incorrect.
 
-## Refresh Session
+### Refresh Session
 
 Visibility: Public
 
@@ -240,7 +246,7 @@ As long as a device remains logged in to the AuthN server, it can hit this endpo
 
 This refresh scheme is necessary so that device sessions may be permanently and effectively revoked.
 
-### Success:
+#### Success:
 
     201 Created
 
@@ -250,11 +256,11 @@ This refresh scheme is necessary so that device sessions may be permanently and 
       }
     }
 
-### Failure:
+#### Failure:
 
     401 Unauthorized
 
-## Logout
+### Logout
 
 Visibility: Public
 
@@ -262,17 +268,17 @@ Visibility: Public
 
 When a user signs up or logs in, their device establishes a session with the AuthN service. This endpoint will revoke the AuthN session. Note that this is implemented as a redirect process, but you may also initiate the logout via XHR and manage redirects yourself as the [`keratin/authn-js`](https://github.com/keratin/authn-js) library does.
 
-### Success:
+#### Success:
 
     302 Found
     Location: ...
 
-### Failure:
+#### Failure:
 
     302 Found
     Location: ...
 
-## Request Password Reset
+### Request Password Reset
 
 Visibility: Public
 
@@ -282,7 +288,7 @@ Visibility: Public
 | ------ | ---- | ----- |
 | `username` | string | &nbsp; |
 
-### Success:
+#### Success:
 
     200 Ok
 
@@ -293,13 +299,13 @@ A webhook will be posted to your application's password reset URI with a request
 | `account_id` | integer | Provided for your application to easily find the appropriate user. |
 | `token` | JWT | Your application must deliver this to the user, usually by email. This JWT's audience is AuthN, and should be opaque to your application. |
 
-### Failure:
+#### Failure:
 
     200 Ok
 
 Note that success and failure are indistinguishable to the client. Even the webhook is performed in the background, to prevent timing attacks.
 
-## Change Password
+### Change Password
 
 Visibility: Public
 
@@ -310,7 +316,7 @@ Visibility: Public
 | `password` | string | Must meet minimum complexity scoring per [zxcvbn](https://blogs.dropbox.com/tech/2012/04/zxcvbn-realistic-password-strength-estimation/). |
 | `token` | JWT | As generated by [Request Password Reset](https://github.com/keratin/authn/wiki/Server-API#request-password-reset). This is optional if the user is currently logged in to AuthN. |
 
-### Success:
+#### Success:
 
     201 Created
 
@@ -320,7 +326,7 @@ Visibility: Public
       }
     }
 
-### Failure:
+#### Failure:
 
     422 Unprocessable Entity
 
@@ -336,7 +342,7 @@ Visibility: Public
 
 Note that `NOT_FOUND` may happen if the account is archived after sending a reset token.
 
-## Service Configuration
+### Service Configuration
 
 Visibility: Public
 
@@ -346,7 +352,7 @@ AuthN is not a fully compliant OpenID Connect service, and therefore does not us
 
 This endpoint is primarily used by backend client libraries to fetch the `jwks_uri` path.
 
-### Success:
+#### Success:
 
 | Params | Type | Notes |
 | ------ | ---- | ----- |
@@ -357,7 +363,7 @@ This endpoint is primarily used by backend client libraries to fetch the `jwks_u
 | `claims_supported` | array[string] | Always `["iss", "sub", "aud", "exp", "iat", "auth_time"]` |
 | `jwks_uri` | string | URL for public key necessary to validate JWTs |
 
-## JSON Web Keys
+### JSON Web Keys
 
 Visibility: Public
 
@@ -365,7 +371,7 @@ Visibility: Public
 
 This endpoint is primarily used by backend client libraries to fetch the public key necessary to validate the JWTs this AuthN service issues.
 
-### Success:
+#### Success:
 
 | Params | Type | Notes |
 | ------ | ---- | ----- |
@@ -376,7 +382,7 @@ This endpoint is primarily used by backend client libraries to fetch the public 
 | `keys.e` | string | &nbsp; |
 | `keys.n` | string | &nbsp; |
 
-## Service Stats
+### Service Stats
 
 Visibility: Public
 
@@ -392,7 +398,7 @@ Time periods are labeled in ISO8601 formats:
 | week   | `YYYY-\WWW` | `2016-W02` |
 | month  | `YYYY-MM` | `2016-01` |
 
-### Success:
+#### Success:
 
     200 Ok
 

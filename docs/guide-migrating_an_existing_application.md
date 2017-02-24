@@ -1,3 +1,9 @@
+---
+title: Migrating an Existing Application
+tags:
+  - guides
+---
+
 # Guide: Migrating an Existing Application
 
 Migrating to Keratin AuthN is best accomplished one user account at a time. The goal is to implement an AuthN integration side-by-side with the legacy system, then detect which system a user's account exists in and act accordingly. This creates a stable transition environment that allows you to gain confidence in the system and control the migration speed.
