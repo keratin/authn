@@ -110,6 +110,24 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
       assert_response(:unauthorized)
     end
+
+    test 'with mangled session cookie' do
+      get refresh_sessions_path,
+        headers: TRUSTED_REFERRER.merge(
+          'Cookie' => "#{AuthNSession::NAME}=\"invalid\""
+        )
+
+      assert_response(:unauthorized)
+    end
+
+    test 'with JWT-ish session cookie' do
+      get refresh_sessions_path,
+        headers: TRUSTED_REFERRER.merge(
+          'Cookie' => "#{AuthNSession::NAME}=\"e30=.e30=.abc\""
+        )
+
+      assert_response(:unauthorized)
+    end
   end
 
   testing '#destroy' do

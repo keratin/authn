@@ -12,5 +12,7 @@ module SessionJWT
   def self.decode(str)
     return {} if str.blank?
     JSON::JWT.decode(str, Rails.application.config.session_key) || {}
+  rescue JSON::JWT::Exception
+    {}
   end
 end
