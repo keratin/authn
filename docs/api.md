@@ -13,6 +13,7 @@ title: Server API
     * [Lock Account](#lock-account)
     * [Unlock Account](#unlock-account)
     * [Archive Account](#archive-account)
+    * [Import Account](#import-account)
   * Sessions
     * [Login](#login)
     * [Refresh Session](#refresh-session)
@@ -199,6 +200,39 @@ Visibility: Private
     {
       "errors": [
         {"field": "account", "message": "NOT_FOUND"}
+      ]
+    }
+
+### Import Account
+
+Visibility: Private
+
+`POST /accounts/import`
+
+| Params | Type | Notes |
+| ------ | ---- | ----- |
+| `username` | string | Must exist and be unique, but otherwise not validated. |
+| `password` | string | May be either an existing BCrypt hash or a plaintext (raw) string. Will not be validated for complexity. |
+| `locked` | boolean | Optional. Will import the account as [locked](#lock-account). |
+
+#### Success:
+
+    201 Created
+
+    {
+      "result": {
+        "id": 123456789
+      }
+    }
+
+#### Failure:
+
+    422 Unprocessable Entity
+
+    {
+      "errors": [
+        {"field": "username", "message": "MISSING"},
+        {"field": "password", "message": "MISSING"}
       ]
     }
 
