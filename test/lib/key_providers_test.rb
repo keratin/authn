@@ -34,13 +34,37 @@ class KeyProvidersTest < ActiveSupport::TestCase
       key1 = provider.key
       assert_equal key1, provider.key, "can fetch the same key again"
 
-      Timecop.travel(@interval)
+      Timecop.freeze(@interval)
       key2 = provider.key
       refute_equal key1, key2, "key rotates"
 
-      Timecop.travel(@interval)
+      Timecop.freeze(@interval)
       key3 = provider.key
       assert_equal [key2, key3], provider.keys, "keep one old key"
+    end
+
+    test 'skipping intervals' do
+      provider = KeyProviders::Rotating.new(interval: @interval, strength: 512)
+
+      _key1 = provider.key
+
+      Timecop.freeze(@interval * 3)
+      key3 = provider.key
+
+      assert_equal [key3], provider.keys, "key1 expired out"
+    end
+
+    test 'skipping intervals when another server did not' do
+      provider1 = KeyProviders::Rotating.new(interval: @interval, strength: 512)
+      provider2 = KeyProviders::Rotating.new(interval: @interval, strength: 512)
+
+      _key1 = provider1.key
+      Timecop.freeze(@interval)
+      key2 = provider2.key
+      Timecop.freeze(@interval)
+      key3 = provider2.key
+
+      assert_equal [key2, key3].map(&:to_s), provider1.keys.map(&:to_s)
     end
 
     test 'existing key' do

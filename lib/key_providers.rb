@@ -43,8 +43,7 @@ module KeyProviders
       encryption_key: Rails.application.config.db_encryption_key,
       race_ms: 500,
       strength: 2048
-      )
-
+    )
       @interval = interval
       @race_ms = race_ms
       @strength = strength
@@ -62,13 +61,15 @@ module KeyProviders
           next if @keys[bucket]
 
           # find or create new key
-          key = fetch("rsa:#{bucket}") do
-            OpenSSL::PKey::RSA.new(@strength)
+          key_str = fetch("rsa:#{bucket}") do
+            OpenSSL::PKey::RSA.new(@strength).to_s
           end
 
-          # trim out old keys (keep 2)
-          # this works because ruby hashes are ordered.
-          @keys = @keys.to_a.last(1).to_h.merge(bucket => key)
+          # trim out old keys
+          @keys = {
+            bucket - 1 => @keys[bucket - 1],
+            bucket => OpenSSL::PKey::RSA.new(key_str)
+          }.compact
         end
       end
 
@@ -76,29 +77,41 @@ module KeyProviders
     end
 
     def keys
-      @keys.values
+      bucket = Time.now.to_i / interval
+      [
+        @keys[bucket - 1] ||= read("rsa:#{bucket - 1}").try!{|val| OpenSSL::PKey::RSA.new(val) },
+        @keys[bucket] ||= read("rsa:#{bucket}").try!{|val| OpenSSL::PKey::RSA.new(val) }
+      ].compact
     end
 
     def public_key
       key.public_key
     end
 
+    private def read(key)
+      REDIS.with do |conn|
+        val = conn.get(key)
+        if val && val != PLACEHOLDER
+          @encryptor.decrypt(val)
+        end
+      end
+    end
+
     private def fetch(key)
       REDIS.with do |conn|
         loop do
           val = conn.get(key)
+          # exists
           if val && val != PLACEHOLDER
-            break OpenSSL::PKey::RSA.new(@encryptor.decrypt(val))
-          else
-            if conn.set(key, PLACEHOLDER, px: race_ms, nx: true)
-              val = yield.tap do |val|
-                conn.set(key, @encryptor.encrypt(val.to_s), ex: interval * 2 + 10)
-              end
-
-              break val
-            else
-              sleep 0.05
+            break @encryptor.decrypt(val)
+          # attempt lock and create it ourselves
+          elsif conn.set(key, PLACEHOLDER, px: race_ms, nx: true)
+            break yield.tap do |val|
+              conn.set(key, @encryptor.encrypt(val.to_s), ex: interval * 2 + 10)
             end
+          # wait
+          else
+            sleep 0.05
           end
         end
       end
