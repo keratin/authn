@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   resources :accounts, only: [] do
     collection do
+      post :import
       post :create if Rails.application.config.features[:signup]
       get :available if Rails.application.config.features[:signup]
     end

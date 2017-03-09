@@ -41,13 +41,13 @@ During this period, you should expect that some users will attempt to sign up wh
 
 Now that every new user has an AuthN account, it's time to start transitioning your existing user accounts.
 
-If your legacy system uses BCrypt passwords, this is easy. You can begin looping through existing accounts, sending them to AuthN, and storing the account_id that you get back.
+If your legacy system uses BCrypt passwords, this is easy. You can begin looping through existing accounts, [sending them to AuthN](api.md#import-account), and storing the account_id that you get back.
 
 However, if your legacy system does not use BCrypt passwords you have a choice:
 
 A. Submit an [issue](https://github.com/keratin/authn) describing your situation. AuthN may be able to add support for your style of password hashing. It's important to realize that these old passwords may not be as secure, though, and after some period of time (months) you should revoke them (any active users who have logged in meanwhile will have their passwords upgraded to BCrypt seamlessly).
 
-B. Over some long period of time (1-2 months), wait for users to log in and import them to AuthN while you have their raw password available. This allows your most active users to transition seamlessly. Then, once you're satisfied with the number of users that have migrated, import the remaining accounts _without passwords_ and flagged for an immediate password change. The next time these inactive accounts return, they will see a prompt telling them to reset their password by the usual process.
+B. Over some long period of time (1-2 months), wait for users to log in and [import them to AuthN](api.md#import-account) while you have their raw password available. This allows your most active users to transition seamlessly. Then, once you're satisfied with the number of users that have migrated, import the remaining accounts _without passwords_ and flagged for an immediate password change. The next time these inactive accounts return, they will see a prompt telling them to reset their password by the usual process.
 
 ## 4. Removing Legacy System
 

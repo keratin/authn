@@ -49,6 +49,35 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  testing '#import' do
+    test 'success' do
+      post import_accounts_path,
+        params: {
+          username: 'username',
+          password: 'password',
+          locked: true
+        },
+        headers: API_CREDENTIALS
+
+      assert_response :created
+      account = Account.find(JSON.parse(response.body)['result']['id'])
+      assert_equal 'username', account.username
+      assert BCrypt::Password.new(account.password).is_password?('password')
+      assert account.locked?
+    end
+
+    test 'with missing fields' do
+      post import_accounts_path,
+        headers: API_CREDENTIALS
+
+      assert_response :unprocessable_entity
+      assert_json_errors(
+        'username' => ErrorCodes::MISSING,
+        'password' => ErrorCodes::MISSING
+      )
+    end
+  end
+
   testing '#available' do
     test 'with unknown username' do
       get available_accounts_path,

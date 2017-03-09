@@ -19,6 +19,25 @@ class AccountsController < ApplicationController
   end
 
   # params:
+  # * username: string
+  # * password: string
+  # * locked: boolean
+  # * password_changed_at: unix timestamp
+  def import
+    raise AccessForbidden unless authenticated?
+
+    importer = AccountImporter.new(params.permit('username', 'password', 'locked').to_h.symbolize_keys)
+
+    if (account = importer.perform)
+      render status: :created, json: JSONEnvelope.result(
+        id: account.id
+      )
+    else
+      render status: :unprocessable_entity, json: JSONEnvelope.errors(importer.errors)
+    end
+  end
+
+  # params:
   # * username
   def available
     if Account.named(params[:username]).exists?
