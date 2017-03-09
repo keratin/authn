@@ -65,9 +65,11 @@ module KeyProviders
             OpenSSL::PKey::RSA.new(@strength).to_s
           end
 
-          # trim out old keys (keep 2)
-          # this works because ruby hashes are ordered.
-          @keys = @keys.to_a.last(1).to_h.merge(bucket => OpenSSL::PKey::RSA.new(key_str))
+          # trim out old keys
+          @keys = {
+            bucket - 1 => @keys[bucket - 1],
+            bucket => OpenSSL::PKey::RSA.new(key_str)
+          }.compact
         end
       end
 
@@ -75,11 +77,24 @@ module KeyProviders
     end
 
     def keys
-      @keys.values
+      bucket = Time.now.to_i / interval
+      [
+        @keys[bucket - 1] ||= read("rsa:#{bucket - 1}").try!{|val| OpenSSL::PKey::RSA.new(val) },
+        @keys[bucket] ||= read("rsa:#{bucket}").try!{|val| OpenSSL::PKey::RSA.new(val) }
+      ].compact
     end
 
     def public_key
       key.public_key
+    end
+
+    private def read(key)
+      REDIS.with do |conn|
+        val = conn.get(key)
+        if val && val != PLACEHOLDER
+          @encryptor.decrypt(val)
+        end
+      end
     end
 
     private def fetch(key)

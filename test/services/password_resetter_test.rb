@@ -43,7 +43,7 @@ class PasswordResetterTest < ActiveSupport::TestCase
       token = jwt(account)
       updater = PasswordResetter.new(token, SecureRandom.hex(8))
 
-      Timecop.travel(1)
+      Timecop.freeze(1)
       assert updater.perform
 
       refute updater.perform
