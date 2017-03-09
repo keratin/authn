@@ -4,7 +4,7 @@ class PasswordsController < ApplicationController
   def edit
     raise AccessForbidden unless referred?
 
-    if account = Account.named(params[:username]).take
+    if (account = Account.named(params[:username]).take)
       # SECURITY NOTE:
       #
       # using a background job will:

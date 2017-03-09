@@ -5,7 +5,7 @@ class PasswordChanger
   attr_reader :account_id, :password
 
   include Account::PasswordValidations
-  validates :account, presence: { message: ErrorCodes::NOT_FOUND }
+  validates :account, presence: {message: ErrorCodes::NOT_FOUND}
   validate  :account_not_locked
 
   def initialize(account_id, password)
@@ -14,9 +14,8 @@ class PasswordChanger
   end
 
   def perform
-    if valid?
-      account.update(password: BCrypt::Password.create(password).to_s)
-    end
+    return unless valid?
+    account.update(password: BCrypt::Password.create(password).to_s)
   end
 
   def account
@@ -24,8 +23,7 @@ class PasswordChanger
   end
 
   private def account_not_locked
-    if account && account.locked?
-      errors.add(:account, ErrorCodes::LOCKED)
-    end
+    return unless account && account.locked?
+    errors.add(:account, ErrorCodes::LOCKED)
   end
 end

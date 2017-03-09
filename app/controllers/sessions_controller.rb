@@ -34,7 +34,7 @@ class SessionsController < ApplicationController
   def refresh
     raise AccessForbidden unless referred?
 
-    if account_id = RefreshToken.find(authn_session[:sub])
+    if (account_id = RefreshToken.find(authn_session[:sub]))
       RefreshToken.touch(token: authn_session[:sub], account_id: account_id)
       render status: :created, json: JSONEnvelope.result(
         id_token: issue_token_from(authn_session)
@@ -64,5 +64,4 @@ class SessionsController < ApplicationController
       redirect_to request.referer
     end
   end
-
 end

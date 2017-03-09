@@ -1,15 +1,15 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 5.0.0', '>= 5.0.0.1'
-gem 'puma', '~> 3.0'
 gem 'bcrypt', '~> 3.1.7'
-gem 'rack-cors'
-gem 'json-jwt'
-gem 'zxcvbn-ruby', require: 'zxcvbn'
-gem 'hiredis'
-gem 'redis', require: ["redis", "redis/connection/hiredis"]
 gem 'connection_pool'
+gem 'hiredis'
+gem 'json-jwt'
+gem 'puma', '~> 3.0'
+gem 'rack-cors'
+gem 'rails', '~> 5.0.0', '>= 5.0.0.1'
+gem 'redis', require: ['redis', 'redis/connection/hiredis']
 gem 'sucker_punch'
+gem 'zxcvbn-ruby', require: 'zxcvbn'
 
 # database driver loading is handled by parsing ENV['DATABASE_URL']
 group :sqlite3 do
@@ -30,8 +30,8 @@ end
 group :test do
   gem 'factory_girl_rails'
   gem 'minitest-stub_any_instance'
-  gem 'webmock'
   gem 'timecop'
+  gem 'webmock'
 end
 
 group :development do

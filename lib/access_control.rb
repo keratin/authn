@@ -1,12 +1,11 @@
 module AccessControl
-
   def authenticated?
     # SECURITY NOTE
     #
     # beware timing attacks! we must not only compare username and password securely to avoid hints
     # about partial matches, we must also be sure to compare both each time and avoid giving away
     # a correct guess on the username.
-    !! ActionController::HttpAuthentication::Basic.authenticate(request) do |username, password|
+    !!ActionController::HttpAuthentication::Basic.authenticate(request) do |username, password|
       [
         SecureCompare.compare(username, Rails.application.config.api_username),
         SecureCompare.compare(password, Rails.application.config.api_password)
@@ -22,7 +21,7 @@ module AccessControl
   #
   # native agents may need to fake this header.
   def referred?
-    !! Rails.application.config.application_domains.include?(requesting_audience)
+    !!Rails.application.config.application_domains.include?(requesting_audience)
   end
 
   # TODO: decide how to manage this shared dependency from ApplicationController

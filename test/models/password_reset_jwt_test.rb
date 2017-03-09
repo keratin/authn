@@ -24,7 +24,7 @@ class PasswordResetJWTTest < ActiveSupport::TestCase
 
   testing '#valid?' do
     test 'with expected claims' do
-      assert jwt().valid?
+      assert jwt.valid?
     end
 
     test 'with unknown issuer' do

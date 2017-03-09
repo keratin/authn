@@ -55,7 +55,7 @@ module KeyProviders
     def key
       bucket = Time.now.to_i / interval
 
-      if !@keys[bucket]
+      unless @keys[bucket]
         @mutex.synchronize do
           # another thread may have already accomplished this
           next if @keys[bucket]
@@ -91,9 +91,7 @@ module KeyProviders
     private def read(key)
       REDIS.with do |conn|
         val = conn.get(key)
-        if val && val != PLACEHOLDER
-          @encryptor.decrypt(val)
-        end
+        @encryptor.decrypt(val) if val && val != PLACEHOLDER
       end
     end
 

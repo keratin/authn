@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resource  :sessions, only: [:create] do
+  resource :sessions, only: [:create] do
     get :refresh
     get :logout, action: 'destroy'
   end

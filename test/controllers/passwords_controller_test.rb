@@ -17,7 +17,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
       assert_response(:success)
       assert_requested(:post, password_reset_url) do |req|
         assert req.body.include?("account_id=#{account.id}")
-        assert req.body.include?("token=")
+        assert req.body.include?('token=')
       end
     end
 

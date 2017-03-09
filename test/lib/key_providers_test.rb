@@ -32,15 +32,15 @@ class KeyProvidersTest < ActiveSupport::TestCase
       provider = KeyProviders::Rotating.new(interval: @interval, strength: 512)
 
       key1 = provider.key
-      assert_equal key1, provider.key, "can fetch the same key again"
+      assert_equal key1, provider.key, 'can fetch the same key again'
 
       Timecop.freeze(@interval)
       key2 = provider.key
-      refute_equal key1, key2, "key rotates"
+      refute_equal key1, key2, 'key rotates'
 
       Timecop.freeze(@interval)
       key3 = provider.key
-      assert_equal [key2, key3], provider.keys, "keep one old key"
+      assert_equal [key2, key3], provider.keys, 'keep one old key'
     end
 
     test 'skipping intervals' do
@@ -51,7 +51,7 @@ class KeyProvidersTest < ActiveSupport::TestCase
       Timecop.freeze(@interval * 3)
       key3 = provider.key
 
-      assert_equal [key3], provider.keys, "key1 expired out"
+      assert_equal [key3], provider.keys, 'key1 expired out'
     end
 
     test 'skipping intervals when another server did not' do
@@ -91,15 +91,12 @@ class KeyProvidersTest < ActiveSupport::TestCase
     test 'thread races' do
       provider = KeyProviders::Rotating.new(interval: @interval, strength: 512)
       keys = []
-      2.times.map do
-        Thread.new{
-          keys << provider.key
-        }
+      Array.new(2) do
+        Thread.new{ keys << provider.key }
       end.each(&:join)
 
       assert_equal 1, keys.uniq.count
       assert_equal 1, provider.keys.count
     end
   end
-
 end

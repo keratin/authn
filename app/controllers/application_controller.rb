@@ -8,12 +8,12 @@ class ApplicationController < ActionController::API
   # Forbidden access means credentials are insufficient. It should map to the HTTP 403 status code.
   class AccessForbidden < StandardError; end
 
-  rescue_from AccessForbidden do |exception|
+  rescue_from AccessForbidden do |_|
     render status: :forbidden, json: JSONEnvelope.errors('referer' => 'is not a trusted host')
   end
 
-  rescue_from AccessUnauthenticated do |exception|
-    ActionController::HttpAuthentication::Basic.authentication_request(self, "Application", nil)
+  rescue_from AccessUnauthenticated do |_|
+    ActionController::HttpAuthentication::Basic.authentication_request(self, 'Application', nil)
   end
 
   private def requesting_audience
@@ -26,5 +26,4 @@ class ApplicationController < ActionController::API
     ActivesTracker.new(sess[:sub]).perform
     IdentityJWT.generate(sess)
   end
-
 end

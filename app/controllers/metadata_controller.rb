@@ -10,7 +10,7 @@ class MetadataController < ApplicationController
       subject_types_supported: ['public'],
       id_token_signing_alg_values_supported: [Rails.application.config.auth_signing_alg],
       claims_supported: %w(iss sub aud exp iat auth_time),
-      jwks_uri: app_keys_url,
+      jwks_uri: app_keys_url
     }
   end
 
@@ -31,7 +31,7 @@ class MetadataController < ApplicationController
     raise AccessUnauthenticated unless authenticated?
 
     render status: :ok, json: {
-      actives: ActivesReporter.new.perform,
+      actives: ActivesReporter.new.perform
     }
   end
 end

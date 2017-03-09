@@ -20,7 +20,7 @@ class ActionDispatch::IntegrationTest
 end
 
 class ActiveSupport::TestCase
-  def self.testing(name, &block)
+  def self.testing(name)
     raise "already testing #{@testing}" if @testing
     @testing = name
     yield
@@ -34,14 +34,15 @@ class ActiveSupport::TestCase
 
   def teardown
     super
-    REDIS.with{|conn| conn.flushall }
+    REDIS.with(&:flushall)
   end
 
   def with_session(account_id: nil, token: nil)
     account_id ||= rand(9999)
-    ApplicationController.stub_any_instance(:authn_session, {
+    ApplicationController.stub_any_instance(
+      :authn_session,
       sub: token || RefreshToken.create(account_id)
-    }) do
+    ) do
       yield
     end
   end
@@ -86,9 +87,7 @@ class ActiveSupport::TestCase
     model[attribute] = value
     model.validate
     assert model.errors[attribute].any?
-    if message
-      assert model.errors[attribute].include?(error)
-    end
+    assert model.errors[attribute].include?(error) if message
   end
 
   def refute_allows_values(model, attribute, values, message: nil)

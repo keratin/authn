@@ -5,7 +5,7 @@ class PasswordResetter
   attr_reader :token, :password
 
   include Account::PasswordValidations
-  validates :account, presence: { message: ErrorCodes::NOT_FOUND }, if: ->{ token.valid? }
+  validates :account, presence: {message: ErrorCodes::NOT_FOUND}, if: ->{ token.valid? }
   validate  :account_not_locked
   validate  :token_is_valid_and_fresh
 
@@ -15,9 +15,8 @@ class PasswordResetter
   end
 
   def perform
-    if valid?
-      account.update(password: BCrypt::Password.create(password).to_s)
-    end
+    return unless valid?
+    account.update(password: BCrypt::Password.create(password).to_s)
   end
 
   def account
@@ -25,16 +24,12 @@ class PasswordResetter
   end
 
   private def account_not_locked
-    if account && account.locked?
-      errors.add(:account, ErrorCodes::LOCKED)
-    end
+    return unless account && account.locked?
+    errors.add(:account, ErrorCodes::LOCKED)
   end
 
   private def token_is_valid_and_fresh
-    unless token.valid? &&
-      (!account || token.lock == account.password_changed_at.to_i)
-
-      errors.add(:token, ErrorCodes::INVALID_OR_EXPIRED)
-    end
+    return if token.valid? && (!account || token.lock == account.password_changed_at.to_i)
+    errors.add(:token, ErrorCodes::INVALID_OR_EXPIRED)
   end
 end

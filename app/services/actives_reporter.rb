@@ -16,15 +16,15 @@ class ActivesReporter
   end
 
   def days
-    @days ||= @trailing_days.times.map{|i| Date.today - i }.reverse
+    @days ||= Array.new(@trailing_days){|i| Date.today - i }.reverse
   end
 
   def weeks
-    @weeks ||= @trailing_weeks.times.map{|i| Date.today - 7*i }.reverse
+    @weeks ||= Array.new(@trailing_weeks){|i| Date.today - 7 * i }.reverse
   end
 
   def months
-    @months ||= @trailing_months.times.map{|i| Date.today << i }.reverse
+    @months ||= Array.new(@trailing_months){|i| Date.today << i }.reverse
   end
 
   private def trim(pairs)

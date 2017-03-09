@@ -7,7 +7,7 @@ class MissingConfiguration < StandardError
 end
 
 def require_env(name)
-  ENV[name] || raise(MissingConfiguration.new(name))
+  ENV[name] || raise(MissingConfiguration, name)
 end
 
 # This setting controls how long the access tokens will live. Applications can and should implement
@@ -100,7 +100,7 @@ Rails.application.config.password_reset_expiry = ENV.fetch('PASSWORD_RESET_TOKEN
 
 # the time zone for tracking and reporting daily/weekly/yearly actives.
 Rails.application.config.statistics_time_zone = Time.find_zone!(ENV.fetch('TIME_ZONE', 'UTC'))
-Rails.application.config.daily_actives_retention = ENV.fetch('DAILY_ACTIVES_RETENTION', 365)  # one year
+Rails.application.config.daily_actives_retention = ENV.fetch('DAILY_ACTIVES_RETENTION', 365) # one year
 Rails.application.config.weekly_actives_retention = ENV.fetch('WEEKLY_ACTIVES_RETENTION', 104) # two years
 
 # The credentials necessary to access private API endpoints.

@@ -1,0 +1,46 @@
+AllCops:
+  Exclude:
+    - db/schema.rb
+    - config/environments/*.rb
+
+Style/Lambda:
+  EnforcedStyle: literal
+Style/IndentArray:
+  EnforcedStyle: consistent
+Style/IndentHash:
+  EnforcedStyle: consistent
+Style/AlignParameters:
+  EnforcedStyle: with_fixed_indentation
+Style/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: never
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+Style/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+Style/SpaceBeforeBlockBraces:
+  EnforcedStyle: no_space
+Style/SpaceInsideBlockBraces:
+  SpaceBeforeBlockParameters: false
+
+Metrics/LineLength:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Metrics/BlockLength:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Style/NumericLiterals:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/MutableConstant:
+  Enabled: false
+Style/DoubleNegation:
+  Enabled: false

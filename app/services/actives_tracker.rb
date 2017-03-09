@@ -10,7 +10,7 @@ class ActivesTracker
   WEEK_KEY = "actives:#{WEEK}"
 
   # ISO 8601 date format
-  MONTH = "%Y-%m"
+  MONTH = '%Y-%m'
   MONTH_KEY = "actives:#{MONTH}"
 
   def perform

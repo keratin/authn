@@ -38,7 +38,7 @@ module RefreshToken
 
   # returns: hex token
   def self.create(account_id)
-    hex = generate_token()
+    hex = generate_token
     bin = [hex].pack('H*')
 
     REDIS.with do |conn|

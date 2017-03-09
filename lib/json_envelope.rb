@@ -7,9 +7,9 @@ module JSONEnvelope
 
   def self.errors(errors)
     {
-      'errors' => errors.map{|a, m|
+      'errors' => errors.map do |a, m|
         {'field' => a, 'message' => m}
-      }
+      end
     }
   end
 end
