@@ -1,10 +1,14 @@
 Rails.application.routes.draw do
   root 'metadata#stats'
 
-  resources :accounts, only: [:create, :destroy] do
-    post :import, on: :collection
-    get :available, on: :collection
+  resources :accounts, only: [] do
+    collection do
+      post :import
+      post :create if Rails.application.config.features[:signup]
+      get :available if Rails.application.config.features[:signup]
+    end
     member do
+      delete :destroy
       match :lock, via: [:put, :patch]
       match :unlock, via: [:put, :patch]
     end
