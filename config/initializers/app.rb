@@ -10,6 +10,10 @@ def require_env(name)
   ENV[name] || raise(MissingConfiguration, name)
 end
 
+def truthy?(str)
+  str.to_s =~ /^(t|true|yes)$/i
+end
+
 # This setting controls how long the access tokens will live. Applications can and should implement
 # a periodic token exchange process to keep the effective session alive much longer than the expiry
 # listed here.
@@ -121,7 +125,7 @@ Rails.application.config.api_password = ENV.fetch('HTTP_AUTH_PASSWORD', rand(999
 BCrypt::Engine.cost = [10, ENV.fetch('BCRYPT_COST', 11).to_i].max
 
 #
-Rails.application.config.email_usernames = ENV.fetch('USERNAME_IS_EMAIL', false).to_s =~ /^t|true|yes$/i
+Rails.application.config.email_usernames = truthy?(ENV.fetch('USERNAME_IS_EMAIL', false))
 
 Rails.application.config.email_username_domains = ENV['EMAIL_USERNAME_DOMAINS'].try!{|val| val.split(',') }
 
@@ -136,3 +140,7 @@ else
   KeyProviders::Rotating.new
 end
 Rails.application.config.auth_signing_alg = 'RS256'
+
+Rails.application.config.features = {
+  signup: truthy?(ENV.fetch('ENABLE_SIGNUP', true))
+}
