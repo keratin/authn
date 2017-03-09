@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root 'metadata#stats'
 
   resources :accounts, only: [:create, :destroy] do
+    post :import, on: :collection
     get :available, on: :collection
     member do
       match :lock, via: [:put, :patch]
