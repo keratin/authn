@@ -2,7 +2,7 @@ Keratin AuthN is an authentication service that keeps you in control of the expe
 
 Read more at [keratin.tech](https://keratin.tech).
 
-[![Build Status](https://travis-ci.org/keratin/authn.svg?branch=master)](https://travis-ci.org/keratin/authn)
+[![Build Status](https://travis-ci.org/keratin/authn.svg?branch=master)](https://travis-ci.org/keratin/authn)[![Coverage Status](https://coveralls.io/repos/github/keratin/authn/badge.svg?branch=master)](https://coveralls.io/github/keratin/authn?branch=master)
 
 # Integration
 
