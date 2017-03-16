@@ -24,7 +24,7 @@ class AccountsController < ApplicationController
   # * locked: boolean
   # * password_changed_at: unix timestamp
   def import
-    raise AccessForbidden unless authenticated?
+    raise AccessUnauthenticated unless authenticated?
 
     importer = AccountImporter.new(params.permit('username', 'password', 'locked').to_h.symbolize_keys)
 
@@ -69,6 +69,20 @@ class AccountsController < ApplicationController
     raise AccessUnauthenticated unless authenticated?
 
     if AccountUnlocker.new(params[:id]).perform
+      head :ok
+    else
+      render status: :not_found, json: JSONEnvelope.errors(
+        'account' => ErrorCodes::NOT_FOUND
+      )
+    end
+  end
+
+  # params:
+  # * id
+  def expire_password
+    raise AccessUnauthenticated unless authenticated?
+
+    if PasswordExpirer.new(params[:id]).perform
       head :ok
     else
       render status: :not_found, json: JSONEnvelope.errors(

@@ -21,6 +21,7 @@ title: Server API
   * Passwords
     * [Request Password Reset](#request-password-reset)
     * [Change Password](#change-password)
+    * [Expire Password](#expire-password)
   * Other
     * [Service Configuration](#service-configuration)
     * [JSON Web Keys](#json-web-keys)
@@ -378,6 +379,32 @@ Visibility: Public
     }
 
 Note that `NOT_FOUND` may happen if the account is archived after sending a reset token.
+
+### Expire Password
+
+Visibility: Private
+
+`PATCH|PUT /accounts/:id/expire_password`
+
+| Params | Type | Notes |
+| ------ | ---- | ----- |
+| `id` | integer | available from the JWT `sub` claim |
+
+Revokes all of the user's current sessions and flags the account for a required password change on their next login. This will manifest as an expired credentials error on what would normally have been a successful login.
+
+#### Success:
+
+    200 Ok
+
+#### Failure:
+
+    404 Not Found
+
+    {
+      "errors": [
+        {"field": "account", "message": "NOT_FOUND"}
+      ]
+    }
 
 ### Service Configuration
 
