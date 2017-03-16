@@ -19,5 +19,9 @@ FactoryGirl.define do
     trait :locked do
       locked true
     end
+
+    trait :expired_password do
+      require_new_password true
+    end
   end
 end

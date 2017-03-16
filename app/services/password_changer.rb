@@ -15,7 +15,10 @@ class PasswordChanger
 
   def perform
     return unless valid?
-    account.update(password: BCrypt::Password.create(password).to_s)
+    account.update(
+      password: BCrypt::Password.create(password).to_s,
+      require_new_password: false
+    )
   end
 
   def account
