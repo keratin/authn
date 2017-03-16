@@ -28,19 +28,6 @@ class Account < ApplicationRecord
     @sessions ||= RefreshToken.sessions(id)
   end
 
-  # TODO: remove in next release
-  def self.migrated?
-    column_names.include?('require_new_password')
-  end
-
-  def require_new_password?
-    read_attribute(:require_new_password) if self.class.migrated?
-  end
-
-  def require_new_password=(val)
-    write_attribute(:require_new_password, val) if self.class.migrated?
-  end
-
   private def set_password_changed_at
     self.password_changed_at = Time.now if password_changed?
   end
