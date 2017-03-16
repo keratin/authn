@@ -58,5 +58,13 @@ class PasswordChangerTest < ActiveSupport::TestCase
       refute updater.perform
       assert_equal [ErrorCodes::LOCKED], updater.errors[:account]
     end
+
+    test 'with expired password' do
+      account = FactoryGirl.create(:account, :expired_password)
+      updater = PasswordChanger.new(account.id, SecureRandom.hex(8))
+
+      assert updater.perform
+      refute account.reload.require_new_password?
+    end
   end
 end

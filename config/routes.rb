@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       delete :destroy
       match :lock, via: [:put, :patch]
       match :unlock, via: [:put, :patch]
+      match :expire_password, via: [:put, :patch]
     end
   end
 

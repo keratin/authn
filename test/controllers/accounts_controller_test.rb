@@ -184,6 +184,28 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  testing '#expire_password' do
+    test 'on active account' do
+      account = FactoryGirl.create(:account)
+
+      patch expire_password_account_path(account.id),
+        headers: API_CREDENTIALS
+
+      assert_response :ok
+      assert account.reload.require_new_password?
+    end
+
+    test 'on unknown account' do
+      patch expire_password_account_path(0),
+        headers: API_CREDENTIALS
+
+      assert_response :not_found
+      assert_json_errors(
+        'account' => ErrorCodes::NOT_FOUND
+      )
+    end
+  end
+
   testing '#destroy' do
     test 'with known account' do
       account = FactoryGirl.create(:account)
