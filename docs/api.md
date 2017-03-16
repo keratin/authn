@@ -264,11 +264,14 @@ Visibility: Public
     {
       "errors": [
         {"field": "credentials", "message": "FAILED"},
+        {"field": "credentials", "message": "EXPIRED"},
         {"field": "account", "message": "LOCKED"}
       ]
     }
 
 Note that no information is given to tell the user whether the username was found or the password was incorrect.
+
+When handling the `EXPIRED` error for credentials, instruct the user their password must be reset.
 
 ### Refresh Session
 

@@ -7,4 +7,5 @@ module ErrorCodes
   MISSING = 'MISSING'
   NOT_FOUND = 'NOT_FOUND'
   TAKEN = 'TAKEN'
+  EXPIRED = 'EXPIRED'
 end

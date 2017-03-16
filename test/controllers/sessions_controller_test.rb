@@ -50,6 +50,20 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       assert_json_errors('account' => ErrorCodes::LOCKED)
     end
 
+    test 'with inactive password' do
+      account = FactoryGirl.create(:account, clear_password: 'valid', require_new_password: true)
+
+      post sessions_path,
+        params: {
+          username: account.username,
+          password: 'valid'
+        },
+        headers: TRUSTED_REFERRER
+
+      assert_response(:unprocessable_entity)
+      assert_json_errors('credentials' => ErrorCodes::EXPIRED)
+    end
+
     test 'with unknown account username' do
       post sessions_path,
         params: {
