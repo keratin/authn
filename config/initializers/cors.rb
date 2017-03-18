@@ -8,11 +8,11 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     origins *Rails.application.config.application_domains
-    resource '/accounts', methods: [:post], headers: :any
-    resource '/accounts/available', methods: [:post], headers: :any
-    resource '/sessions', methods: [:post], headers: :any
-    resource '/sessions/refresh', methods: [:get], headers: :any
-    resource '/password/reset', methods: [:get], headers: :any
-    resource '/password', methods: [:post], headers: :any
+    resource "#{Rails.application.config.mounted_path.chomp('/')}/accounts", methods: [:post], headers: :any
+    resource "#{Rails.application.config.mounted_path.chomp('/')}/accounts/available", methods: [:post], headers: :any
+    resource "#{Rails.application.config.mounted_path.chomp('/')}/sessions", methods: [:post], headers: :any
+    resource "#{Rails.application.config.mounted_path.chomp('/')}/sessions/refresh", methods: [:get], headers: :any
+    resource "#{Rails.application.config.mounted_path.chomp('/')}/password/reset", methods: [:get], headers: :any
+    resource "#{Rails.application.config.mounted_path.chomp('/')}/password", methods: [:post], headers: :any
   end
 end
