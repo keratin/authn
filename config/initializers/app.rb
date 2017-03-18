@@ -77,6 +77,7 @@ Rails.application.config.application_domains = require_env('APP_DOMAINS').split(
 #
 # e.g. https://auth.service
 Rails.application.config.authn_url = require_env('AUTHN_URL')
+Rails.application.config.mounted_path = URI.parse(Rails.application.config.authn_url).path.presence || '/'
 
 # minimum complexity score from the zxcvbn algorithm, where:
 #
