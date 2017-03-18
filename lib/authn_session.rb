@@ -15,6 +15,7 @@ module AuthNSession
     #       token within the jwt within the cookie will expire.
     cookies[NAME] = {
       value: SessionJWT.generate(account_id, audience),
+      path: Rails.application.config.mounted_path,
       secure: Rails.application.config.force_ssl,
       httponly: true
     }
