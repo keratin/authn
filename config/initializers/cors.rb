@@ -12,6 +12,8 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     resource "#{Rails.application.config.mounted_path.chomp('/')}/accounts/available", methods: [:post], headers: :any
     resource "#{Rails.application.config.mounted_path.chomp('/')}/sessions", methods: [:post], headers: :any
     resource "#{Rails.application.config.mounted_path.chomp('/')}/sessions/refresh", methods: [:get], headers: :any
+    resource "#{Rails.application.config.mounted_path.chomp('/')}/session", methods: [:post], headers: :any
+    resource "#{Rails.application.config.mounted_path.chomp('/')}/session/refresh", methods: [:get], headers: :any
     resource "#{Rails.application.config.mounted_path.chomp('/')}/password/reset", methods: [:get], headers: :any
     resource "#{Rails.application.config.mounted_path.chomp('/')}/password", methods: [:post], headers: :any
   end
