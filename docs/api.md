@@ -241,7 +241,7 @@ Visibility: Private
 
 Visibility: Public
 
-`POST /sessions`
+`POST /session`
 
 | Params | Type | Notes |
 | ------ | ---- | ----- |
@@ -278,7 +278,7 @@ When handling the `EXPIRED` error for credentials, instruct the user their passw
 
 Visibility: Public
 
-`GET /sessions/refresh`
+`GET /session/refresh`
 
 As long as a device remains logged in to the AuthN server, it can hit this endpoint to fetch a fresh JWT session. The [`keratin/authn-js`](https://github.com/keratin/authn-js) library can automate this by pre-emptively refreshing tokens when they reach halflife.
 
@@ -302,19 +302,13 @@ This refresh scheme is necessary so that device sessions may be permanently and 
 
 Visibility: Public
 
-`GET /sessions/logout`
+`DELETE /session`
 
-When a user signs up or logs in, their device establishes a session with the AuthN service. This endpoint will revoke the AuthN session. Note that this is implemented as a redirect process, but you may also initiate the logout via XHR and manage redirects yourself as the [`keratin/authn-js`](https://github.com/keratin/authn-js) library does.
+When a user signs up or logs in, their device establishes a session with the AuthN service, and within that session is a refresh token. This endpoint will revoke the token and discard the session.
 
 #### Success:
 
-    302 Found
-    Location: ...
-
-#### Failure:
-
-    302 Found
-    Location: ...
+    200 OK
 
 ### Request Password Reset
 

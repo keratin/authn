@@ -16,9 +16,8 @@ Rails.application.routes.draw do
       end
     end
 
-    resource :sessions, only: [:create] do
+    resource :session, only: [:create, :destroy] do
       get :refresh
-      get :logout, action: 'destroy'
     end
 
     get '/password/reset' => 'passwords#edit'
