@@ -16,6 +16,12 @@ Rails.application.routes.draw do
       end
     end
 
+    # deprecated
+    resource :sessions, only: [:create] do
+      get :refresh
+      get :logout, action: 'destroy'
+    end
+
     resource :session, only: [:create, :destroy] do
       get :refresh
     end
