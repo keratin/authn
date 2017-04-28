@@ -46,24 +46,12 @@ class SessionsController < ApplicationController
     end
   end
 
-  # params:
-  # * redirect_uri (optional)
   def destroy
     raise AccessForbidden unless referred?
 
     RefreshToken.revoke(authn_session[:sub])
     cookies.delete(AuthNSession::NAME)
 
-    redirect_host = begin
-      URI.parse(params[:redirect_uri]).host
-    rescue URI::InvalidURIError
-      nil
-    end
-
-    if Rails.application.config.application_domains.include?(redirect_host)
-      redirect_to params[:redirect_uri]
-    else
-      redirect_to request.referer
-    end
+    head :ok
   end
 end
