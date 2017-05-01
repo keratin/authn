@@ -5,8 +5,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     test 'with username and password' do
       account_id = Account.maximum(:id).to_i + 1
 
-      assert_cors(:post, accounts_path)
-      post accounts_path,
+      cors_post accounts_path,
         params: {
           username: 'username',
           password: SecureRandom.hex(8)
@@ -26,7 +25,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     end
 
     test 'with missing fields' do
-      post accounts_path,
+      cors_post accounts_path,
         params: {},
         headers: TRUSTED_REFERRER
 
@@ -38,7 +37,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     end
 
     test 'with untrusted referrer' do
-      post accounts_path,
+      cors_post accounts_path,
         params: {
           username: 'username',
           password: SecureRandom.hex(8)
@@ -82,7 +81,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
   testing '#available' do
     test 'with unknown username' do
       assert_cors(:get, available_accounts_path)
-      get available_accounts_path,
+      cors_get available_accounts_path,
         params: {
           username: 'unknown'
         }
@@ -94,7 +93,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     test 'with existing username' do
       account = FactoryGirl.create(:account)
 
-      get available_accounts_path,
+      cors_get available_accounts_path,
         params: {
           username: account.username
         }
@@ -106,7 +105,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     test 'with locked username' do
       account = FactoryGirl.create(:account, :locked)
 
-      get available_accounts_path,
+      cors_get available_accounts_path,
         params: {
           username: account.username
         }

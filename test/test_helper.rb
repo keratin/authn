@@ -28,6 +28,21 @@ class ActionDispatch::IntegrationTest
     end
   end
 
+  def cors_get(path, **args)
+    assert_cors(:get, path)
+    get(path, **args)
+  end
+
+  def cors_post(path, **args)
+    assert_cors(:post, path)
+    post(path, **args)
+  end
+
+  def cors_delete(path, **args)
+    assert_cors(:delete, path)
+    delete(path, **args)
+  end
+
   def assert_cors(verb, path)
     options path,
       headers: {
