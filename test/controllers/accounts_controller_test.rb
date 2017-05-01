@@ -5,6 +5,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     test 'with username and password' do
       account_id = Account.maximum(:id).to_i + 1
 
+      assert_cors(:post, accounts_path)
       post accounts_path,
         params: {
           username: 'username',
@@ -80,6 +81,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
   testing '#available' do
     test 'with unknown username' do
+      assert_cors(:get, available_accounts_path)
       get available_accounts_path,
         params: {
           username: 'unknown'

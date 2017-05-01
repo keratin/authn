@@ -8,6 +8,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
 
       account = FactoryGirl.create(:account)
 
+      assert_cors(:get, password_reset_path)
       get password_reset_path,
         params: {
           username: account.username
@@ -49,6 +50,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
       account = FactoryGirl.create(:account)
       password = SecureRandom.hex(8)
 
+      assert_cors(:post, password_path)
       post password_path,
         params: {
           token: jwt(account),

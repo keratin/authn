@@ -21,6 +21,25 @@ class ActionDispatch::IntegrationTest
     )
   }
 
+  def options(path, **args)
+    @html_document = nil
+    integration_session.__send__(:process, :options, path, **args).tap do
+      copy_session_variables!
+    end
+  end
+
+  def assert_cors(verb, path)
+    options path,
+      headers: {
+        'Origin' => TRUSTED_REFERRER['REFERER'],
+        'Access-Control-Request-Method' => verb.to_s.upcase,
+        'Access-Control-Request-Headers' => 'Content-Type'
+      }
+    assert_response(:ok)
+    assert_equal TRUSTED_REFERRER['REFERER'], response.headers['Access-Control-Allow-Origin']
+    assert verb.to_s.upcase.in?(response.headers['Access-Control-Allow-Methods'].split(',').map(&:strip))
+  end
+
   def authn_session
     JSON::JWT.decode(cookies[AuthNSession::NAME], Rails.application.config.session_key)
   end

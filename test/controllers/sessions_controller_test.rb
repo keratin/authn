@@ -5,6 +5,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     test 'with valid credentials' do
       account = FactoryGirl.create(:account, clear_password: 'valid')
 
+      assert_cors(:post, session_path)
       post session_path,
         params: {
           username: account.username,
@@ -108,6 +109,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   testing '#refresh' do
     test 'with existing valid session' do
       with_session(account_id: 42) do
+        assert_cors(:get, refresh_session_path)
         get refresh_session_path,
           headers: TRUSTED_REFERRER
       end
@@ -150,6 +152,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       token = RefreshToken.create(account_id)
 
       with_session(account_id: account_id, token: token) do
+        assert_cors(:delete, session_path)
         delete session_path,
           headers: TRUSTED_REFERRER
       end
