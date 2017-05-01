@@ -20,6 +20,34 @@ class ActionDispatch::IntegrationTest
       Rails.application.config.api_password
     )
   }
+
+  def authn_session
+    JSON::JWT.decode(cookies[AuthNSession::NAME], Rails.application.config.session_key)
+  end
+
+  def assert_json_jwt(str)
+    assert str.presence
+    claims = JSON::JWT.decode(str, Rails.application.config.key_provider.public_key)
+    yield claims
+  end
+
+  def assert_json_result(data = {})
+    assert_equal JSONEnvelope.result(data), JSON.parse(response.body)
+  end
+
+  def assert_json_errors(errors)
+    assert_equal JSONEnvelope.errors(errors), JSON.parse(response.body)
+  end
+
+  def with_session(account_id: nil, token: nil)
+    account_id ||= rand(9999)
+    ApplicationController.stub_any_instance(
+      :authn_session,
+      sub: token || RefreshToken.create(account_id)
+    ) do
+      yield
+    end
+  end
 end
 
 class ActiveSupport::TestCase
@@ -40,16 +68,6 @@ class ActiveSupport::TestCase
     REDIS.with(&:flushall)
   end
 
-  def with_session(account_id: nil, token: nil)
-    account_id ||= rand(9999)
-    ApplicationController.stub_any_instance(
-      :authn_session,
-      sub: token || RefreshToken.create(account_id)
-    ) do
-      yield
-    end
-  end
-
   def with_config(key, value)
     previous_value = Rails.application.config.send(key)
     begin
@@ -58,26 +76,6 @@ class ActiveSupport::TestCase
     ensure
       Rails.application.config.send("#{key}=", previous_value)
     end
-  end
-
-  private
-
-  def authn_session
-    JSON::JWT.decode(cookies[AuthNSession::NAME], Rails.application.config.session_key)
-  end
-
-  def assert_json_jwt(str)
-    assert str.presence
-    claims = JSON::JWT.decode(str, Rails.application.config.key_provider.public_key)
-    yield claims
-  end
-
-  def assert_json_result(data = {})
-    assert_equal JSONEnvelope.result(data), JSON.parse(response.body)
-  end
-
-  def assert_json_errors(errors)
-    assert_equal JSONEnvelope.errors(errors), JSON.parse(response.body)
   end
 
   def assert_allows_value(model, attribute, value)
