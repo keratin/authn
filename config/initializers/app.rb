@@ -41,12 +41,12 @@ end
 # Note that this expiry also creates an effective timeout period where anyone who closes the app and
 # stops refreshing the session will find themselves logged out (holding an outdate session token)
 # when they return.
-Rails.application.config.access_token_expiry = ENV.fetch('ACCESS_TOKEN_TTL', 1.hour.to_i)
+Rails.application.config.access_token_expiry = ENV.fetch('ACCESS_TOKEN_TTL', 1.hour).to_i
 
 # This setting controls how long we keep refresh tokens after their last touch. This is necessary to
 # prevent years-long Redis bloat from inactive sessions, where users close the window rather than
 # log out.
-Rails.application.config.refresh_token_expiry = ENV.fetch('REFRESH_TOKEN_TTL', 1.year.to_i)
+Rails.application.config.refresh_token_expiry = ENV.fetch('REFRESH_TOKEN_TTL', 1.year).to_i
 
 # Derives a key from `base` using `salt`. This derivation uses 20k iterations of PBKDF2 HMAC SHA-256
 # and means that any attempt to brute-force the secret from a signature will have a high work factor
@@ -88,7 +88,7 @@ Rails.application.config.mounted_path = URI.parse(Rails.application.config.authn
 # * 4 - very unguessable
 #
 # see: https://blogs.dropbox.com/tech/2012/04/zxcvbn-realistic-password-strength-estimation/
-Rails.application.config.minimum_password_score = ENV.fetch('PASSWORD_POLICY_SCORE', 2)
+Rails.application.config.minimum_password_score = ENV.fetch('PASSWORD_POLICY_SCORE', 2).to_i
 
 # full urls for endpoints we need to communicate with the main application.
 #
@@ -101,12 +101,12 @@ Rails.application.config.application_endpoints = {}.tap do |routes|
 end
 
 # how long is a password reset token valid?
-Rails.application.config.password_reset_expiry = ENV.fetch('PASSWORD_RESET_TOKEN_TTL', 30.minutes.to_i)
+Rails.application.config.password_reset_expiry = ENV.fetch('PASSWORD_RESET_TOKEN_TTL', 30.minutes).to_i
 
 # the time zone for tracking and reporting daily/weekly/yearly actives.
 Rails.application.config.statistics_time_zone = Time.find_zone!(ENV.fetch('TIME_ZONE', 'UTC'))
-Rails.application.config.daily_actives_retention = ENV.fetch('DAILY_ACTIVES_RETENTION', 365) # one year
-Rails.application.config.weekly_actives_retention = ENV.fetch('WEEKLY_ACTIVES_RETENTION', 104) # two years
+Rails.application.config.daily_actives_retention = ENV.fetch('DAILY_ACTIVES_RETENTION', 365).to_i # one year
+Rails.application.config.weekly_actives_retention = ENV.fetch('WEEKLY_ACTIVES_RETENTION', 104).to_i # two years
 
 # The credentials necessary to access private API endpoints.
 # This should be paired with TLS.
